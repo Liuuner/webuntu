@@ -1,10 +1,10 @@
-import {configureStore} from "@reduxjs/toolkit";
-import personalisationReducer from "../features/personalisation/PersonalisationSlice.ts"
+import { configureStore } from "@reduxjs/toolkit";
+import personalisationReducer from "../features/personalisation/PersonalisationSlice.ts";
 
 export const store = configureStore({
-    reducer: {
-        personalisation: personalisationReducer
-    },
+  reducer: {
+    personalisation: personalisationReducer
+  }
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,8 +1,8 @@
-import {useAppSelector} from "./app/hooks.ts";
+import { useAppSelector } from "./app/hooks.ts";
 
 export default function Theme() {
-    const personalisation = useAppSelector(state => state.personalisation);
-    const style = `
+  const personalisation = useAppSelector((state) => state.personalisation);
+  const style = `
 #infoBar {
     background-color: #000;
 }
@@ -20,11 +20,7 @@ export default function Theme() {
 .appMenuBar {
     background-color: ${personalisation.theme.secondColor};
 }
-`
+`;
 
-    return (
-        <style>
-            {style}
-        </style>
-    )
+  return <style>{style}</style>;
 }

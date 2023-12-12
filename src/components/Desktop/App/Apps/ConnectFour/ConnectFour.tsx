@@ -1,9 +1,5 @@
-function ConnectFour () {
-    return (
-        <div>
-
-        </div>
-    )
+function ConnectFour() {
+  return <div></div>;
 }
 
 export default ConnectFour;

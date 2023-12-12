@@ -57,13 +57,15 @@
     /*background: #74f442;*/
 }
 
-.resizer.top, .resizer.bottom {
+.resizer.top,
+.resizer.bottom {
     width: calc(100% - 24px);
     height: 6px;
     margin: 0 12px;
 }
 
-.resizer.left, .resizer.right {
+.resizer.left,
+.resizer.right {
     width: 6px;
     height: calc(100% - 24px);
     margin: 12px 0;
@@ -89,11 +91,13 @@
     right: -3px;
 }
 
-.resizer.bottom, .resizer.top {
+.resizer.bottom,
+.resizer.top {
     cursor: ns-resize;
 }
 
-.resizer.left, .resizer.right {
+.resizer.left,
+.resizer.right {
     cursor: ew-resize;
 }
 
@@ -120,4 +124,3 @@
     right: -5px;
     cursor: nwse-resize;
 }
-

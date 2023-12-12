@@ -1,23 +1,25 @@
 import "./InfoBar.css";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import {useAppSelector} from "../../app/hooks.ts";
+import { useAppSelector } from "../../app/hooks.ts";
 
 function InfoBar() {
-    const infoBarHeight = useAppSelector(state => state.personalisation.infoBarHeight);
+  const infoBarHeight = useAppSelector(
+    (state) => state.personalisation.infoBarHeight
+  );
 
-    const [time, setTime] = useState(dayjs().format('DD MMM HH:mm'))
+  const [time, setTime] = useState(dayjs().format("DD MMM HH:mm"));
 
-    useEffect(() => {
-        setInterval(() => setTime(dayjs().format('DD MMM HH:mm')), 3000)
-    }, [])
+  useEffect(() => {
+    setInterval(() => setTime(dayjs().format("DD MMM HH:mm")), 3000);
+  }, []);
 
-    return (
-        <header id={"infoBar"} style={{height: infoBarHeight}}>
-            <div id={"time"}>
-                <p>{time}</p>
-            </div>
-            {/*<div id={"leftButtonGroup"}>
+  return (
+    <header id={"infoBar"} style={{ height: infoBarHeight }}>
+      <div id={"time"}>
+        <p>{time}</p>
+      </div>
+      {/*<div id={"leftButtonGroup"}>
                 <div className={"infoBarButton"}>
                     <p>Activities</p>
                 </div>
@@ -34,8 +36,8 @@ function InfoBar() {
                 <img src="/info-bar-icons/volume_icon.png" alt="Volume"/>
                 <img style={{filter: "invert(100%)"}} src="/info-bar-icons/power-icon.png" alt="Power"/>
             </div>*/}
-        </header>
-    )
+    </header>
+  );
 }
 
 export default InfoBar;
