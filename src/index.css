@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@500&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+:root {
+    --app-icon-width: 80%;
+    --app-icon-img-width: 60%;
+}
+
+html, body, #root {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+html, body, div, p {
+    margin: 0;
+    padding: 0;
+    
+    color: white;
+}
+
+#root {
+    display: grid;
+    grid-template:
+            "infoBar infoBar" 23px
+            "appBar desktop" auto / 70px 1fr;
+    
+    background-color: #521338;
+    background-image: url("/jammy-jellyfish-wallpaper.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}

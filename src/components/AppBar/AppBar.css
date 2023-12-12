@@ -1,0 +1,60 @@
+#appBar {
+    grid-area: appBar;
+    backdrop-filter: brightness(60%) blur(10px);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#apps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.appIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--app-icon-width);
+    aspect-ratio: 1/1;
+    border-radius: 13px;
+    margin: 6px 0;
+    transition: ease-in-out 130ms;
+}
+
+.appIcon > img {
+    width: var(--app-icon-img-width);
+    aspect-ratio: 1/1;
+}
+.appIcon:hover {
+    background: #423b40;
+}
+
+#menuIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--app-icon-width);
+    aspect-ratio: 1/1;
+    border-radius: 13px;
+    margin: 6px 0;
+    transition: ease-in-out 130ms;
+}
+
+#menuIcon > img {
+    width: var(--app-icon-img-width);
+    aspect-ratio: 1/1;
+    filter: invert(100%);
+}
+
+#menuIcon:hover {
+    background: #423b40;
+}

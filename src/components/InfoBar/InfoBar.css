@@ -1,0 +1,35 @@
+#infoBar {
+    grid-area: infoBar;
+    
+    display: flex;
+    /*justify-content: space-between;*/
+    justify-content: center;
+    
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#leftButtonGroup {
+    display: flex;
+}
+
+.infoBarButton {
+    display: flex;
+}
+
+.infoBarButton img {
+    height: 80%;
+}
+
+#rightButtonGroup {
+    display: flex;
+}
+
+#rightButtonGroup img {
+    height: 80%;
+}
+
+#time {
+    display: flex;
+}
