@@ -2,10 +2,10 @@ import "./App.css";
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 
 type Area = {
-  top: string;
-  left: string;
-  height: string;
-  width: string;
+  top: number;
+  left: number;
+  height: number;
+  width: number;
 };
 
 enum Direction {
@@ -38,10 +38,10 @@ const App = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const [area, setArea] = useState<Area>({
-    top: "0px",
-    left: "0px",
-    height: initialSize?.height + "px",
-    width: initialSize?.width + "px"
+    top: 0,
+    left: 0,
+    height: initialSize.height,
+    width: initialSize.width
   });
 
   const ref = useRef<HTMLDivElement>();
@@ -51,8 +51,8 @@ const App = ({
       const rect = ref.current?.getBoundingClientRect();
       setArea({
         ...area,
-        top: window.innerHeight / 2 - rect.height / 2 + "px",
-        left: window.innerWidth / 2 - rect.width / 2 + "px"
+        top: window.innerHeight / 2 - rect.height / 2,
+        left: window.innerWidth / 2 - rect.width / 2
       });
     }
   }, [ref]);
@@ -61,8 +61,9 @@ const App = ({
     if (isFullScreen) return;
     e.preventDefault();
 
-    let pos3 = e.clientX;
-    let pos4 = e.clientY;
+    const target = e.currentTarget;
+    const offsetLeft = e.clientX - target.getBoundingClientRect().left;
+    const offsetTop = e.clientY - target.getBoundingClientRect().top;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -70,34 +71,21 @@ const App = ({
     function drag(e: MouseEvent) {
       e.preventDefault();
 
-      let pos1 = pos3 - e.clientX;
-      let pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      //TODO: better?
-      if (e.clientX <= appBarWidth) {
-        pos1 = 0;
-      }
-      if (e.clientY <= infoBarHeight) {
-        pos2 = 0;
-      }
-
-      const boundingClientRect = ref.current?.getBoundingClientRect();
-      if (!boundingClientRect) return;
+      const newX = e.clientX - offsetLeft;
+      const newY = e.clientY - offsetTop;
 
       setArea({
         ...area,
         top:
           Math.min(
-            window.innerHeight - boundingClientRect.height,
-            Math.max(infoBarHeight, boundingClientRect.top - pos2)
-          ) + "px",
+            window.innerHeight - area.height,
+            Math.max(infoBarHeight, newY)
+          ),
         left:
           Math.min(
-            window.innerWidth - boundingClientRect.width,
-            Math.max(appBarWidth, boundingClientRect.left - pos1)
-          ) + "px"
+            window.innerWidth - area.width,
+            Math.max(appBarWidth, newX)
+          )
       });
     }
 
@@ -148,8 +136,8 @@ const App = ({
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
+                ),
+              height: Math.max(minimumSize.height, heightTop)
             }));
           }
           if (
@@ -165,8 +153,8 @@ const App = ({
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
+                ),
+              width: Math.max(minimumSize.width, widthLeft)
             }));
           }
           break;
@@ -185,8 +173,8 @@ const App = ({
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
+                ),
+              height: Math.max(minimumSize.height, heightTop)
             }));
           }
           break;
@@ -205,8 +193,8 @@ const App = ({
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
+                ),
+              height: Math.max(minimumSize.height, heightTop)
             }));
           }
           if (
@@ -215,7 +203,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
+              width: Math.max(minimumSize.width, widthRight)
             }));
           }
           break;
@@ -227,7 +215,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
+              width: Math.max(minimumSize.width, widthRight)
             }));
           }
           break;
@@ -239,7 +227,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
+              width: Math.max(minimumSize.width, widthRight)
             }));
           }
           if (
@@ -250,7 +238,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
+              height: Math.max(minimumSize.height, heightBottom)
             }));
           }
           break;
@@ -264,7 +252,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
+              height: Math.max(minimumSize.height, heightBottom)
             }));
           }
           break;
@@ -278,7 +266,7 @@ const App = ({
           ) {
             setArea((prev) => ({
               ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
+              height: Math.max(minimumSize.height, heightBottom)
             }));
           }
           if (
@@ -294,8 +282,8 @@ const App = ({
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
+                ),
+              width: Math.max(minimumSize.width, widthLeft)
             }));
           }
           break;
@@ -314,8 +302,8 @@ const App = ({
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
+                ),
+              width: Math.max(minimumSize.width, widthLeft)
             }));
           }
           break;
@@ -328,10 +316,17 @@ const App = ({
     }
   }
 
+  const areaMapper = ({ top, left, height, width }: Area) => ({
+    top: `${top}px`,
+    left: `${left}px`,
+    height: `${height}px`,
+    width: `${width}px`
+  });
+
   return (
     <div
       className={isFullScreen ? "fullscreenApp" : "app"}
-      style={isFullScreen ? { height: "100%", width: "100%" } : area}
+      style={isFullScreen ? { height: "100%", width: "100%" } : areaMapper(area)}
       ref={ref}
     >
       <div
