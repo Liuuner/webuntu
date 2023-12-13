@@ -113,13 +113,33 @@ const App = ({
 
     function resize(e: MouseEvent) {
       if (!element) return;
-      const widthRight = original_width + (e.pageX - original_mouse_x);
-      const widthLeft = original_width - (e.pageX - original_mouse_x);
-      const heightBottom = original_height + (e.pageY - infoBarHeight - original_mouse_y);
-      const heightTop = original_height - (e.pageY - infoBarHeight - original_mouse_y);
+      /*const widthRight = original_width + (e.clientX - original_mouse_x);
+      const widthLeft = original_width - (e.clientX - original_mouse_x);
+      const heightBottom = original_height + (e.clientY - infoBarHeight - original_mouse_y);
+      const heightTop = original_height - (e.clientY - infoBarHeight - original_mouse_y);*/
       const boundingClientRect = element?.getBoundingClientRect();
+      const current_mouse_x = e.clientX - appBarWidth;
+      const current_mouse_y = e.clientY - infoBarHeight;
+
+      const getTop = () => {
+        return current_mouse_y;
+      };
+
+      const getLeft = () => {
+        return current_mouse_x;
+      };
 
       switch (direction) {
+        case Direction.TOP_LEFT:
+          setArea((prev) => ({
+            ...prev,
+            top: getTop(),
+            left: getLeft()
+          }));
+          break;
+      }
+
+      /*switch (direction) {
         case Direction.TOP_LEFT:
           if (
             boundingClientRect.top - heightTop + boundingClientRect.height >
@@ -305,7 +325,7 @@ const App = ({
             }));
           }
           break;
-      }
+      }*/
     }
 
     function clear() {
