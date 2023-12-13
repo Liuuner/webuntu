@@ -10,7 +10,6 @@ function Desktop() {
             </App>*/}
 
       <App applicationTitle={"Connect Four"}>
-        {/*<ConnectFour />*/}
         <TicTacToe/>
       </App>
     </main>
