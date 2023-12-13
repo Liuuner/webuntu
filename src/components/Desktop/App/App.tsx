@@ -44,7 +44,7 @@ const App = ({
     width: initialSize.width
   });
 
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ref.current) {
@@ -58,12 +58,12 @@ const App = ({
   }, [ref]);
 
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (isFullScreen) return;
     e.preventDefault();
+    if (isFullScreen) return;
 
     const target = e.currentTarget;
-    const offsetLeft = e.clientX - target.getBoundingClientRect().left;
-    const offsetTop = e.clientY - target.getBoundingClientRect().top;
+    const offsetLeft = e.clientX - target.getBoundingClientRect().left + appBarWidth;
+    const offsetTop = e.clientY - target.getBoundingClientRect().top + infoBarHeight;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -79,12 +79,12 @@ const App = ({
         top:
           Math.min(
             window.innerHeight - area.height,
-            Math.max(infoBarHeight, newY)
+            Math.max(0, newY)
           ),
         left:
           Math.min(
             window.innerWidth - area.width,
-            Math.max(appBarWidth, newX)
+            Math.max(0, newX)
           )
       });
     }
@@ -100,15 +100,13 @@ const App = ({
     direction: Direction
   ) {
     e.preventDefault();
-
     const element = ref.current;
-
     if (!element) return;
 
     const original_width = element.getBoundingClientRect().width;
     const original_height = element.getBoundingClientRect().height;
-    const original_mouse_x = e.pageX;
-    const original_mouse_y = e.pageY;
+    const original_mouse_x = e.pageX - appBarWidth;
+    const original_mouse_y = e.pageY - infoBarHeight;
 
     document.onmousemove = resize;
     document.onmouseup = clear;
@@ -117,8 +115,8 @@ const App = ({
       if (!element) return;
       const widthRight = original_width + (e.pageX - original_mouse_x);
       const widthLeft = original_width - (e.pageX - original_mouse_x);
-      const heightBottom = original_height + (e.pageY - original_mouse_y);
-      const heightTop = original_height - (e.pageY - original_mouse_y);
+      const heightBottom = original_height + (e.pageY - infoBarHeight - original_mouse_y);
+      const heightTop = original_height - (e.pageY - infoBarHeight - original_mouse_y);
       const boundingClientRect = element?.getBoundingClientRect();
 
       switch (direction) {
@@ -132,7 +130,7 @@ const App = ({
               ...prev,
               top:
                 Math.max(
-                  infoBarHeight,
+                  0,
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
@@ -142,14 +140,14 @@ const App = ({
           }
           if (
             boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
+            0 &&
             widthLeft > minimumSize.width
           ) {
             setArea((prev) => ({
               ...prev,
               left:
                 Math.max(
-                  appBarWidth,
+                  0,
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
@@ -162,14 +160,14 @@ const App = ({
         case Direction.TOP:
           if (
             boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
+            0 &&
             heightTop > minimumSize.height
           ) {
             setArea((prev) => ({
               ...prev,
               top:
                 Math.max(
-                  infoBarHeight,
+                  0,
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
@@ -182,14 +180,14 @@ const App = ({
         case Direction.TOP_RIGHT:
           if (
             boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
+            0 &&
             heightTop > minimumSize.height
           ) {
             setArea((prev) => ({
               ...prev,
               top:
                 Math.max(
-                  infoBarHeight,
+                  0,
                   boundingClientRect.top -
                   heightTop +
                   boundingClientRect.height
@@ -271,14 +269,14 @@ const App = ({
           }
           if (
             boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
+            0 &&
             widthLeft > minimumSize.width
           ) {
             setArea((prev) => ({
               ...prev,
               left:
                 Math.max(
-                  appBarWidth,
+                  0,
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
@@ -291,14 +289,14 @@ const App = ({
         case Direction.LEFT:
           if (
             boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
+            0 &&
             widthLeft > minimumSize.width
           ) {
             setArea((prev) => ({
               ...prev,
               left:
                 Math.max(
-                  appBarWidth,
+                  0,
                   boundingClientRect.left -
                   widthLeft +
                   boundingClientRect.width
@@ -316,6 +314,7 @@ const App = ({
     }
   }
 
+  // TODO to inset
   const areaMapper = ({ top, left, height, width }: Area) => ({
     top: `${top}px`,
     left: `${left}px`,
@@ -326,7 +325,7 @@ const App = ({
   return (
     <div
       className={isFullScreen ? "fullscreenApp" : "app"}
-      style={isFullScreen ? { height: "100%", width: "100%" } : areaMapper(area)}
+      style={isFullScreen ? {} : areaMapper(area)}
       ref={ref}
     >
       <div

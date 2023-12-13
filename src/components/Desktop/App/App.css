@@ -1,6 +1,6 @@
 .app {
     border-radius: 13px;
-    position: absolute;
+    position: relative;
     outline: #130610 1px solid;
 }
 
@@ -8,6 +8,10 @@
     height: 100%;
     width: 100%;
     border: 1px #130610 solid;
+    position: relative;
+    top: 0;
+    left: 0;
+    transition: all, ease-in-out 300ms;
 }
 
 .appMenuBar {
