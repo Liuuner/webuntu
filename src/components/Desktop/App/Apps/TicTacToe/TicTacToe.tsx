@@ -12,8 +12,8 @@ export function TicTacToe() {
   return (
     <>
       {conn
-        ? (<TTTGame conn={conn} playerNum={playerNum}/>)
-        : (<TTTLogin peer={peer} setPeer={setPeer} setConn={setConn} setPlayerNum={setPlayerNum}/>)
+        ? (<TTTGame conn={conn} setConn={setConn} playerNum={playerNum} setPlayerNum={setPlayerNum}/>)
+        : (<TTTLogin peer={peer} setPeer={setPeer} setConn={setConn} setPlayerNum={setPlayerNum} playerNum={playerNum}/>)
       }
     </>
   );

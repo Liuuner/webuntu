@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DataConnection, Peer } from "peerjs";
 
 type TTTLoginProps = {
@@ -6,11 +6,13 @@ type TTTLoginProps = {
   setPeer: Dispatch<SetStateAction<Peer | undefined>>;
   setConn: Dispatch<SetStateAction<DataConnection | undefined>>
   setPlayerNum: Dispatch<SetStateAction<number>>;
+  playerNum: number
 }
 
 export function TTTLogin(props: TTTLoginProps) {
   const [username, setUsername] = useState("");
   const [oppUsername, setOppUsername] = useState("");
+  const [msg, setMsg] = useState("Connect to a game")
 
   function onConnOpen(conn: DataConnection) {
     props.setConn(conn);
@@ -26,6 +28,7 @@ export function TTTLogin(props: TTTLoginProps) {
   }
 
   function onPeerClose() {
+    props.setPlayerNum(6)
     props.setConn(undefined);
     props.setPeer(undefined);
   }
@@ -63,9 +66,21 @@ export function TTTLogin(props: TTTLoginProps) {
 
   }
 
+  useEffect(() => {
+    let tmpMsg = "Connect to a game"
+    switch (props.playerNum){
+      case 3: tmpMsg = "You won"; break;
+      case 4: tmpMsg = "You lost"; break;
+      case 5: tmpMsg = "Error: Game corrupted"; break;
+      case 6: tmpMsg = "Error: Disconnected"; break
+    }
+    setMsg(tmpMsg)
+  }, [props.playerNum]);
+
   return (
     <>
       <h2>TicTacToe</h2>
+      <h3>{msg}</h3>
       <div>
         <p><label htmlFor={"username-input"}>Choose your Username:</label></p>
         <p><input id={"username-input"} type="text" value={username}

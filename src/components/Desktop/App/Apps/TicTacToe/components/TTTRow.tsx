@@ -1,17 +1,28 @@
-import {TTTBtn} from "./TTTBtn.tsx";
+import { TTTBtn } from "./TTTBtn.tsx";
 
 type TTTRowProps = {
   rowIndex: number;
-  rowBtnStates: number[];
+  isBtnDisabled: (index: number) => boolean;
+  getBtnState: (index: number) => string;
+  setField: (index: number) => void;
 }
 
-export function TTTRow(props: TTTRowProps){
+export function TTTRow(props: TTTRowProps) {
 
   return (
     <tr>
-      <TTTBtn btnIndex={props.rowIndex * 3 - 3} btnState={props.rowBtnStates[0]}/>
-      <TTTBtn btnIndex={props.rowIndex * 3 - 2} btnState={props.rowBtnStates[1]}/>
-      <TTTBtn btnIndex={props.rowIndex * 3 - 1} btnState={props.rowBtnStates[2]}/>
+      <TTTBtn btnIndex={props.rowIndex * 3 - 3}
+              isBtnDisabled={props.isBtnDisabled}
+              getBtnState={props.getBtnState}
+              setField={props.setField} />
+      <TTTBtn btnIndex={props.rowIndex * 3 - 2}
+              isBtnDisabled={props.isBtnDisabled}
+              getBtnState={props.getBtnState}
+              setField={props.setField} />
+      <TTTBtn btnIndex={props.rowIndex * 3 - 1}
+              isBtnDisabled={props.isBtnDisabled}
+              getBtnState={props.getBtnState}
+              setField={props.setField} />
     </tr>
-  )
+  );
 }

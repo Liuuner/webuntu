@@ -1,24 +1,19 @@
 type TTTBtnProps = {
   btnIndex: number;
-  btnState: number;
+  isBtnDisabled: (index: number) => boolean;
+  getBtnState: (index: number) => string;
+  setField: (index: number) => void;
 }
 
 export function TTTBtn(props: TTTBtnProps) {
 
-  function getChar(): string {
-    switch (props.btnState) {
-      case 1:
-        return "O"
-      case 2:
-        return "X"
-    }
-    return "_"
-  }
-
-
   return (
     <td>
-      <button className={"ttt-btn " + props.btnIndex}>{getChar()}</button>
+      <button className={"ttt-btn " + props.btnIndex}
+              disabled={props.isBtnDisabled(props.btnIndex)}
+              onClick={() => props.setField(props.btnIndex)}>{
+        props.getBtnState(props.btnIndex)}
+      </button>
     </td>
-  )
+  );
 }
