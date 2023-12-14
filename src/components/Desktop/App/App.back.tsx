@@ -49,15 +49,15 @@ function AppBack() {
 
       setPosition({
         top:
-            Math.min(
-                window.innerHeight - boundingClientRect.height,
-                Math.max(InfoBarHeight, boundingClientRect.top - pos2)
-            ) + "px",
+          Math.min(
+            window.innerHeight - boundingClientRect.height,
+            Math.max(InfoBarHeight, boundingClientRect.top - pos2)
+          ) + "px",
         left:
-            Math.min(
-                window.innerWidth - boundingClientRect.width,
-                Math.max(AppBarWidth, boundingClientRect.left - pos1)
-            ) + "px"
+          Math.min(
+            window.innerWidth - boundingClientRect.width,
+            Math.max(AppBarWidth, boundingClientRect.left - pos1)
+          ) + "px",
       });
     }
 
@@ -68,13 +68,13 @@ function AppBack() {
   }
 
   return (
-      <div className={"app"} style={position} ref={ref}>
-        <div className={"appMenuBar"} onMouseDown={draggable}>
-          {" "}
-          Application
-        </div>
-        <div className={"appContent"}>Content</div>
+    <div className={"app"} style={position} ref={ref}>
+      <div className={"appMenuBar"} onMouseDown={draggable}>
+        {" "}
+        Application
       </div>
+      <div className={"appContent"}>Content</div>
+    </div>
   );
 }
 

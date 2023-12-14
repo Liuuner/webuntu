@@ -1,13 +1,18 @@
 .app {
     border-radius: 13px;
-    position: absolute;
+    position: relative;
     outline: #130610 1px solid;
 }
 
 .fullscreenApp {
+    position: relative;
     height: 100%;
     width: 100%;
+    left: 0;
+    top: 0;
     border: 1px #130610 solid;
+    transition: all,
+    ease-in 200ms;
 }
 
 .appMenuBar {
