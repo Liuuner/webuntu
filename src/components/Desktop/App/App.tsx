@@ -44,6 +44,10 @@ const App = ({
     width: initialSize.width
   });
 
+
+// TODO in store
+  const APP_MENUBAR_HEIGHT = 35;
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -78,12 +82,12 @@ const App = ({
         ...area,
         top:
           Math.min(
-            window.innerHeight - area.height,
+            window.innerHeight - infoBarHeight - APP_MENUBAR_HEIGHT,
             Math.max(0, newY)
           ),
         left:
           Math.min(
-            window.innerWidth - area.width,
+            window.innerWidth - appBarWidth - area.width,
             Math.max(0, newX)
           )
       });
@@ -100,232 +104,99 @@ const App = ({
     direction: Direction
   ) {
     e.preventDefault();
-    const element = ref.current;
-    if (!element) return;
 
-    const original_width = element.getBoundingClientRect().width;
-    const original_height = element.getBoundingClientRect().height;
-    const original_mouse_x = e.pageX - appBarWidth;
-    const original_mouse_y = e.pageY - infoBarHeight;
+    const originalX = e.clientX - appBarWidth;
+    const originalY = e.clientY - infoBarHeight;
 
     document.onmousemove = resize;
     document.onmouseup = clear;
 
     function resize(e: MouseEvent) {
-      if (!element) return;
-      /*const widthRight = original_width + (e.clientX - original_mouse_x);
-      const widthLeft = original_width - (e.clientX - original_mouse_x);
-      const heightBottom = original_height + (e.clientY - infoBarHeight - original_mouse_y);
-      const heightTop = original_height - (e.clientY - infoBarHeight - original_mouse_y);*/
-      const boundingClientRect = element?.getBoundingClientRect();
-      const current_mouse_x = e.clientX - appBarWidth;
-      const current_mouse_y = e.clientY - infoBarHeight;
 
-      const getTop = () => {
-        return current_mouse_y;
-      };
+      const newX = Math.min(
+        window.innerWidth - appBarWidth,
+        Math.max(e.clientX - appBarWidth, 0)
+      );
+      const newY = Math.min(
+        window.innerHeight - infoBarHeight,
+        Math.max(e.clientY - infoBarHeight, 0)
+      );
 
-      const getLeft = () => {
-        return current_mouse_x;
-      };
+      const calcResizeBottom = (area: Area, newY: number, originalY: number) => ({
+        height: Math.max(minimumSize?.height, area.height + newY - originalY)
+      });
+      const calcResizeRight = (area: Area, newX: number, originalX: number) => ({
+        width: Math.max(minimumSize?.width, area.width + newX - originalX)
+      });
+      const calcResizeUp = (area: Area, newY: number, originalY: number) => ({
+        top: newY,
+        height: Math.max(minimumSize?.height, area.height + originalY - newY)
+      });
+      const calcResizeLeft = (area: Area, newX: number, originalX: number) => ({
+        left: newX,
+        width: Math.max(minimumSize?.width, area.width + originalX - newX)
+      });
 
       switch (direction) {
         case Direction.TOP_LEFT:
-          setArea((prev) => ({
-            ...prev,
-            top: getTop(),
-            left: getLeft()
+          setArea(() => ({
+            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeLeft(area, newX, originalX)
           }));
-          break;
-      }
-
-      /*switch (direction) {
-        case Direction.TOP_LEFT:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  0,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ),
-              height: Math.max(minimumSize.height, heightTop)
-            }));
-          }
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            0 &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  0,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ),
-              width: Math.max(minimumSize.width, widthLeft)
-            }));
-          }
           break;
 
         case Direction.TOP:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            0 &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  0,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ),
-              height: Math.max(minimumSize.height, heightTop)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeUp(area, newY, originalY)
+          }))
           break;
 
         case Direction.TOP_RIGHT:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            0 &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  0,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ),
-              height: Math.max(minimumSize.height, heightTop)
-            }));
-          }
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.RIGHT:
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.BOTTOM_RIGHT:
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight)
-            }));
-          }
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY),
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.BOTTOM:
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY)
+          }));
           break;
 
         case Direction.BOTTOM_LEFT:
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom)
-            }));
-          }
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            0 &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  0,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ),
-              width: Math.max(minimumSize.width, widthLeft)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY),
+            ...calcResizeLeft(area, newX, originalX)
+          }));
           break;
 
         case Direction.LEFT:
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            0 &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  0,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ),
-              width: Math.max(minimumSize.width, widthLeft)
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeLeft(area, newX, originalX)
+          }));
           break;
-      }*/
+      }
     }
 
     function clear() {
