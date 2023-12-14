@@ -4,7 +4,7 @@ import personalisationReducer from "../features/personalisation/PersonalisationS
 export const store = configureStore({
   reducer: {
     personalisation: personalisationReducer
-  }
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -11,7 +11,8 @@
     left: 0;
     top: 0;
     border: 1px #130610 solid;
-    transition: all, ease-in 200ms;
+    transition: all,
+    ease-in 200ms;
 }
 
 .appMenuBar {

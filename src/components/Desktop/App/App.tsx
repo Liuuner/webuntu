@@ -44,8 +44,7 @@ const App = ({
     width: initialSize.width
   });
 
-
-// TODO in store
+  // TODO in store
   const APP_MENUBAR_HEIGHT = 35;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -66,8 +65,10 @@ const App = ({
     if (isFullScreen) return;
 
     const target = e.currentTarget;
-    const offsetLeft = e.clientX - target.getBoundingClientRect().left + appBarWidth;
-    const offsetTop = e.clientY - target.getBoundingClientRect().top + infoBarHeight;
+    const offsetLeft =
+      e.clientX - target.getBoundingClientRect().left + appBarWidth;
+    const offsetTop =
+      e.clientY - target.getBoundingClientRect().top + infoBarHeight;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -80,16 +81,14 @@ const App = ({
 
       setArea({
         ...area,
-        top:
-          Math.min(
-            window.innerHeight - infoBarHeight - APP_MENUBAR_HEIGHT,
-            Math.max(0, newY)
-          ),
-        left:
-          Math.min(
-            window.innerWidth - appBarWidth - area.width,
-            Math.max(0, newX)
-          )
+        top: Math.min(
+          window.innerHeight - infoBarHeight - APP_MENUBAR_HEIGHT,
+          Math.max(0, newY)
+        ),
+        left: Math.min(
+          window.innerWidth - appBarWidth - area.width,
+          Math.max(0, newX)
+        )
       });
     }
 
@@ -112,7 +111,6 @@ const App = ({
     document.onmouseup = clear;
 
     function resize(e: MouseEvent) {
-
       const newX = Math.min(
         window.innerWidth - appBarWidth,
         Math.max(e.clientX - appBarWidth, 0)
@@ -122,10 +120,18 @@ const App = ({
         Math.max(e.clientY - infoBarHeight, 0)
       );
 
-      const calcResizeBottom = (area: Area, newY: number, originalY: number) => ({
+      const calcResizeBottom = (
+        area: Area,
+        newY: number,
+        originalY: number
+      ) => ({
         height: Math.max(minimumSize?.height, area.height + newY - originalY)
       });
-      const calcResizeRight = (area: Area, newX: number, originalX: number) => ({
+      const calcResizeRight = (
+        area: Area,
+        newX: number,
+        originalX: number
+      ) => ({
         width: Math.max(minimumSize?.width, area.width + newX - originalX)
       });
       const calcResizeUp = (area: Area, newY: number, originalY: number) => ({
@@ -149,7 +155,7 @@ const App = ({
           setArea((prev) => ({
             ...prev,
             ...calcResizeUp(area, newY, originalY)
-          }))
+          }));
           break;
 
         case Direction.TOP_RIGHT:

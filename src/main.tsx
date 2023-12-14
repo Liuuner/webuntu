@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Ubuntu />
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
