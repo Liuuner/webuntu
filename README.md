@@ -1,6 +1,6 @@
 # Webuntu - Where our bugs have more character than your typical '404' page.
 # Webuntu - Waiting builds character! Even our code takes breaks. 🐢
-![Logo](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+[![Logo](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Overview
 
