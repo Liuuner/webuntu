@@ -7,14 +7,24 @@ import { DataConnection, Peer } from "peerjs";
 export function TicTacToe() {
   const [peer, setPeer] = useState<Peer | undefined>(undefined);
   const [conn, setConn] = useState<DataConnection | undefined>(undefined);
-  const [playerNum, setPlayerNum] = useState(0)
+  const [playerNum, setPlayerNum] = useState(0);
+  const [username, setUsername] = useState("");
+  const [oppUsername, setOppUsername] = useState("");
+  const [gameOn, setGameOn] = useState(false)
 
   return (
-    <>
-      {conn
-        ? (<TTTGame conn={conn} setConn={setConn} playerNum={playerNum} setPlayerNum={setPlayerNum}/>)
-        : (<TTTLogin peer={peer} setPeer={setPeer} setConn={setConn} setPlayerNum={setPlayerNum} playerNum={playerNum}/>)
+    <div id={"tic-tac-toe"}>
+      {gameOn && conn
+        ? (<TTTGame conn={conn} setConn={setConn}
+                    playerNum={playerNum} setPlayerNum={setPlayerNum}
+                    setGameOn={setGameOn}/>)
+        : (<TTTLogin setConn={setConn}
+                     peer={peer} setPeer={setPeer}
+                     setPlayerNum={setPlayerNum} playerNum={playerNum}
+                     username={username} setUsername={setUsername}
+                     oppUsername={oppUsername} setOppUsername={setOppUsername}
+                     setGameOn={setGameOn}/>)
       }
-    </>
+    </div>
   );
 }

@@ -7,6 +7,7 @@ type TTTGameProps = {
   conn: DataConnection;
   setPlayerNum: Dispatch<SetStateAction<number>>;
   playerNum: number;
+  setGameOn: Dispatch<SetStateAction<boolean>>;
 }
 
 export function TTTGame(props: TTTGameProps) {
@@ -15,12 +16,14 @@ export function TTTGame(props: TTTGameProps) {
   const inputType = useRef(0);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    props.conn.on("data", function(data: number[]) {
-      inputType.current = 2
-      console.log(data)
-      setNewGameState(data)
+    props.conn.on("data", function(data) {
+      inputType.current = 2;
+      console.log("recv", data);
+      setNewGameState(data as number[]);
+    });
+    props.conn.on("close", function() {
+      props.setGameOn(false)
+      props.setConn(undefined)
     });
   }, [props.conn]);
 
@@ -28,26 +31,25 @@ export function TTTGame(props: TTTGameProps) {
     setNewGameState(newGameState => {
       const tmpGameState = [...newGameState];
       tmpGameState[index] = props.playerNum;
-      inputType.current = 1
-      props.conn.send(tmpGameState)
+      inputType.current = 1;
+      props.conn.send(tmpGameState);
       return tmpGameState;
     });
   }
 
   useEffect(() => {
-    console.log("use-effect-new", newGameState)
-    if (inputType.current > 0){
-      evaluate(newGameState, gameState)
-      setGameState(newGameState)
-      inputType.current = 0
+    console.log("use-effect-new", newGameState);
+    if (inputType.current > 0) {
+      evaluate(newGameState, gameState);
+      setGameState(newGameState);
+      inputType.current = 0;
     }
   }, [newGameState]);
 
   function endGame(status: number) {
     console.log("exit-game", status);
     props.setPlayerNum(status);
-    props.conn.close();
-    props.setConn(undefined);
+    props.setGameOn(false)
   }
 
   function checkIfWon(num1: number, num2: number, num3: number, newGameState: number[]) {
