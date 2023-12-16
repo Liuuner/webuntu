@@ -2,10 +2,10 @@ import "./App.css";
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 
 type Area = {
-  top: string;
-  left: string;
-  height: string;
-  width: string;
+  top: number;
+  left: number;
+  height: number;
+  width: number;
 };
 
 enum Direction {
@@ -38,31 +38,37 @@ const App = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const [area, setArea] = useState<Area>({
-    top: "0px",
-    left: "0px",
-    height: initialSize?.height + "px",
-    width: initialSize?.width + "px"
+    top: 0,
+    left: 0,
+    height: initialSize.height,
+    width: initialSize.width
   });
 
-  const ref = useRef<HTMLDivElement>();
+  // TODO in store
+  const APP_MENUBAR_HEIGHT = 35;
+
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ref.current) {
       const rect = ref.current?.getBoundingClientRect();
       setArea({
         ...area,
-        top: window.innerHeight / 2 - rect.height / 2 + "px",
-        left: window.innerWidth / 2 - rect.width / 2 + "px"
+        top: window.innerHeight / 2 - rect.height / 2,
+        left: window.innerWidth / 2 - rect.width / 2
       });
     }
   }, [ref]);
 
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (isFullScreen) return;
     e.preventDefault();
+    if (isFullScreen) return;
 
-    let pos3 = e.clientX;
-    let pos4 = e.clientY;
+    const target = e.currentTarget;
+    const offsetLeft =
+      e.clientX - target.getBoundingClientRect().left + appBarWidth;
+    const offsetTop =
+      e.clientY - target.getBoundingClientRect().top + infoBarHeight;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -70,34 +76,19 @@ const App = ({
     function drag(e: MouseEvent) {
       e.preventDefault();
 
-      let pos1 = pos3 - e.clientX;
-      let pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      //TODO: better?
-      if (e.clientX <= appBarWidth) {
-        pos1 = 0;
-      }
-      if (e.clientY <= infoBarHeight) {
-        pos2 = 0;
-      }
-
-      const boundingClientRect = ref.current?.getBoundingClientRect();
-      if (!boundingClientRect) return;
+      const newX = e.clientX - offsetLeft;
+      const newY = e.clientY - offsetTop;
 
       setArea({
         ...area,
-        top:
-          Math.min(
-            window.innerHeight - boundingClientRect.height,
-            Math.max(infoBarHeight, boundingClientRect.top - pos2)
-          ) + "px",
-        left:
-          Math.min(
-            window.innerWidth - boundingClientRect.width,
-            Math.max(appBarWidth, boundingClientRect.left - pos1)
-          ) + "px"
+        top: Math.min(
+          window.innerHeight - infoBarHeight - APP_MENUBAR_HEIGHT,
+          Math.max(0, newY)
+        ),
+        left: Math.min(
+          window.innerWidth - appBarWidth - area.width,
+          Math.max(0, newX)
+        )
       });
     }
 
@@ -113,211 +104,103 @@ const App = ({
   ) {
     e.preventDefault();
 
-    const element = ref.current;
-
-    if (!element) return;
-
-    const original_width = element.getBoundingClientRect().width;
-    const original_height = element.getBoundingClientRect().height;
-    const original_mouse_x = e.pageX;
-    const original_mouse_y = e.pageY;
+    const originalX = e.clientX - appBarWidth;
+    const originalY = e.clientY - infoBarHeight;
 
     document.onmousemove = resize;
     document.onmouseup = clear;
 
     function resize(e: MouseEvent) {
-      if (!element) return;
-      const widthRight = original_width + (e.pageX - original_mouse_x);
-      const widthLeft = original_width - (e.pageX - original_mouse_x);
-      const heightBottom = original_height + (e.pageY - original_mouse_y);
-      const heightTop = original_height - (e.pageY - original_mouse_y);
-      const boundingClientRect = element?.getBoundingClientRect();
+      const newX = Math.min(
+        window.innerWidth - appBarWidth,
+        Math.max(e.clientX - appBarWidth, 0)
+      );
+      const newY = Math.min(
+        window.innerHeight - infoBarHeight,
+        Math.max(e.clientY - infoBarHeight, 0)
+      );
+
+      const calcResizeBottom = (
+        area: Area,
+        newY: number,
+        originalY: number
+      ) => ({
+        height: Math.max(minimumSize?.height, area.height + newY - originalY)
+      });
+      const calcResizeRight = (
+        area: Area,
+        newX: number,
+        originalX: number
+      ) => ({
+        width: Math.max(minimumSize?.width, area.width + newX - originalX)
+      });
+      const calcResizeUp = (area: Area, newY: number, originalY: number) => ({
+        top: newY,
+        height: Math.max(minimumSize?.height, area.height + originalY - newY)
+      });
+      const calcResizeLeft = (area: Area, newX: number, originalX: number) => ({
+        left: newX,
+        width: Math.max(minimumSize?.width, area.width + originalX - newX)
+      });
 
       switch (direction) {
         case Direction.TOP_LEFT:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  infoBarHeight,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
-            }));
-          }
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  appBarWidth,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
-            }));
-          }
+          setArea(() => ({
+            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeLeft(area, newX, originalX)
+          }));
           break;
 
         case Direction.TOP:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  infoBarHeight,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeUp(area, newY, originalY)
+          }));
           break;
 
         case Direction.TOP_RIGHT:
-          if (
-            boundingClientRect.top - heightTop + boundingClientRect.height >
-            infoBarHeight &&
-            heightTop > minimumSize.height
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              top:
-                Math.max(
-                  infoBarHeight,
-                  boundingClientRect.top -
-                  heightTop +
-                  boundingClientRect.height
-                ) + "px",
-              height: Math.max(minimumSize.height, heightTop) + "px"
-            }));
-          }
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.RIGHT:
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.BOTTOM_RIGHT:
-          if (
-            boundingClientRect.right + widthRight - boundingClientRect.width <
-            window.innerWidth
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              width: Math.max(minimumSize.width, widthRight) + "px"
-            }));
-          }
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY),
+            ...calcResizeRight(area, newX, originalX)
+          }));
           break;
 
         case Direction.BOTTOM:
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY)
+          }));
           break;
 
         case Direction.BOTTOM_LEFT:
-          if (
-            boundingClientRect.bottom +
-            heightBottom -
-            boundingClientRect.height <
-            window.innerHeight
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              height: Math.max(minimumSize.height, heightBottom) + "px"
-            }));
-          }
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  appBarWidth,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeBottom(area, newY, originalY),
+            ...calcResizeLeft(area, newX, originalX)
+          }));
           break;
 
         case Direction.LEFT:
-          if (
-            boundingClientRect.left - widthLeft + boundingClientRect.width >
-            appBarWidth &&
-            widthLeft > minimumSize.width
-          ) {
-            setArea((prev) => ({
-              ...prev,
-              left:
-                Math.max(
-                  appBarWidth,
-                  boundingClientRect.left -
-                  widthLeft +
-                  boundingClientRect.width
-                ) + "px",
-              width: Math.max(minimumSize.width, widthLeft) + "px"
-            }));
-          }
+          setArea((prev) => ({
+            ...prev,
+            ...calcResizeLeft(area, newX, originalX)
+          }));
           break;
       }
     }
@@ -328,10 +211,18 @@ const App = ({
     }
   }
 
+  // TODO to inset
+  const areaMapper = ({ top, left, height, width }: Area) => ({
+    top: `${top}px`,
+    left: `${left}px`,
+    height: `${height}px`,
+    width: `${width}px`
+  });
+
   return (
     <div
       className={isFullScreen ? "fullscreenApp" : "app"}
-      style={isFullScreen ? { height: "100%", width: "100%" } : area}
+      style={isFullScreen ? {} : areaMapper(area)}
       ref={ref}
     >
       <div

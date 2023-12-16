@@ -15,7 +15,7 @@ const initialState: PersonalisationState = {
     firstColor: "#2c2c2c",
     secondColor: "#222222",
     accentColor: "#77216F"
-  }
+  },
 };
 
 const personalisationSlice = createSlice({
@@ -30,8 +30,8 @@ const personalisationSlice = createSlice({
     },
     setTheme: (state, action: PayloadAction<ThemeType>) => {
       state.theme = action.payload;
-    }
-  }
+    },
+  },
 });
 export const { setAppBarWidth, setInfoBarHeight, setTheme } =
   personalisationSlice.actions;
