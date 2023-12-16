@@ -76,7 +76,7 @@ export function TTTLogin(props: TTTLoginProps) {
 
   return (
     <>
-      <h2>Peer-to-Peer TicTacToe</h2>
+      <h2>Peer-Tac-Toe</h2>
       <h3>{msg}</h3>
       <div>
         <p><label htmlFor={"username-input"}>Choose your Username:</label></p>

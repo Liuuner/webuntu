@@ -1,4 +1,3 @@
-import ConnectFour from "./App/Apps/ConnectFour/ConnectFour.tsx";
 import App from "./App/App.tsx";
 import { TicTacToe } from "./App/Apps/TicTacToe/TicTacToe.tsx";
 
@@ -9,8 +8,8 @@ function Desktop() {
 
             </App>*/}
 
-      <App applicationTitle={"Connect Four"}>
-        <TicTacToe/>
+      <App applicationTitle={"Peer-Tac-Toe"}>
+        <TicTacToe />
       </App>
     </main>
   );
