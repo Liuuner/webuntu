@@ -1,5 +1,6 @@
 # Webuntu - Where our bugs have more character than your typical '404' page.
 # Webuntu - Waiting builds character! Even our code takes breaks. 🐢
+# Webuntu -  it's in the Web
 [![Logo](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Overview
@@ -46,8 +47,7 @@ We welcome contributions! If you'd like to contribute to this project, please fo
 
 ## License
 
-This project is licensed under the ***BaNaNa*** License.
-> https://www.youtube.com/watch?v=sJZ1G0e5bWU
+This project is licensed under the ***[BaNaNa](https://www.youtube.com/watch?v=sJZ1G0e5bWU)*** License.
 
 ## Acknowledgments
 
