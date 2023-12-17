@@ -57,6 +57,7 @@ This project is licensed under the ***[BaNaNa](https://www.youtube.com/watch?v=s
 ## Resources
 - https://vanillaframework.io/docs
 - https://www.figma.com/file/r7uLTd0hdEi553MP4wNh2Z/Ubuntu-UI-(Community)?type=design&node-id=0-1&mode=design&t=CCaLmUhAVE3hVIcS-0
+- Icons: https://github.com/canonical/vanilla-framework/blob/main/scss/_base_icon-definitions.scss
 
 ## Contact
 
