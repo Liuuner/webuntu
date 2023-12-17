@@ -52,6 +52,7 @@ This project is licensed under the ***[BaNaNa](https://www.youtube.com/watch?v=s
 ## Acknowledgments
 
 > Inspired by the Ubuntu desktop environment.
+> https://vanillaframework.io/docs
 > Built with Vite, React and Node.js.
 
 ## Contact
