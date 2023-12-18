@@ -1,5 +1,6 @@
 import "./App.css";
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { WindowCloseIcon } from "./WindowCloseIcon.tsx";
 
 type Area = {
   top: number;
@@ -61,6 +62,7 @@ const App = ({
   }, [ref]);
 
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if (isFullScreen) return;
     e.preventDefault();
     if (isFullScreen) return;
 
@@ -134,7 +136,7 @@ const App = ({
       ) => ({
         width: Math.max(minimumSize?.width, area.width + newX - originalX)
       });
-      const calcResizeUp = (area: Area, newY: number, originalY: number) => ({
+      const calcResizeTop = (area: Area, newY: number, originalY: number) => ({
         top: newY,
         height: Math.max(minimumSize?.height, area.height + originalY - newY)
       });
@@ -146,7 +148,7 @@ const App = ({
       switch (direction) {
         case Direction.TOP_LEFT:
           setArea(() => ({
-            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeTop(area, newY, originalY),
             ...calcResizeLeft(area, newX, originalX)
           }));
           break;
@@ -154,14 +156,14 @@ const App = ({
         case Direction.TOP:
           setArea((prev) => ({
             ...prev,
-            ...calcResizeUp(area, newY, originalY)
+            ...calcResizeTop(area, newY, originalY)
           }));
           break;
 
         case Direction.TOP_RIGHT:
           setArea((prev) => ({
             ...prev,
-            ...calcResizeUp(area, newY, originalY),
+            ...calcResizeTop(area, newY, originalY),
             ...calcResizeRight(area, newX, originalX)
           }));
           break;
@@ -230,8 +232,14 @@ const App = ({
         onMouseDown={draggable}
         onDoubleClick={() => setIsFullScreen((prev) => !prev)}
       >
-        {" "}
-        {applicationTitle}
+        <div className="applicationTitle">
+          {applicationTitle}
+        </div>
+        <div className="appBarIcons">
+          <WindowCloseIcon onClose={() => console.log("closed")} />
+          <WindowCloseIcon onClose={() => console.log("closed")} />
+          <WindowCloseIcon onClose={() => console.log("closed")} />
+        </div>
       </div>
       <div className={"appContent"}>{children}</div>
       {!isFullScreen && <Resizers resizable={resizable} />}

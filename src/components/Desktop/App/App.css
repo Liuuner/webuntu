@@ -13,17 +13,22 @@
     border: 1px #130610 solid;
     transition: all,
     ease-in 200ms;
+    
+    .appMenuBar {
+        border-radius: 0;
+    }
 }
 
 .appMenuBar {
     height: 35px;
     width: 100%;
     
+    display: flex;
+    
     border-top-right-radius: 13px;
     border-top-left-radius: 13px;
     border-bottom: 2px #1a1a1a solid;
     
-    cursor: move;
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -56,6 +61,7 @@
     width: 15px;
     height: 15px; /*magic to turn square into circle*/
     /*background: white;*/
+    border-radius: 100%;
 }
 
 .resizer.line {
@@ -128,4 +134,47 @@
     bottom: -5px;
     right: -5px;
     cursor: nwse-resize;
+}
+
+
+.WindowCloseIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background-color: #333;
+    
+    aspect-ratio: 1/1;
+    max-height: 50%;
+    
+    cursor: auto;
+    
+    transition: ease 50ms;
+    
+    &:hover {
+        background-color: #e95420;
+    }
+    
+    > svg {
+        height: 80%;
+        aspect-ratio: 1/1;
+    }
+}
+
+.appBarIcons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    
+    > div {
+        margin-right: 10px;
+    }
+}
+
+.applicationTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
 }
