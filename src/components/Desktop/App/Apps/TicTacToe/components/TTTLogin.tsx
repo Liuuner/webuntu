@@ -15,16 +15,16 @@ type TTTLoginProps = {
 }
 
 export function TTTLogin(props: TTTLoginProps) {
-  const [msg, setMsg] = useState("Connect to a game")
+  const [msg, setMsg] = useState("Connect to a game");
 
   function onConnOpen(conn: DataConnection) {
     props.setConn(conn);
-    props.setGameOn(true)
+    props.setGameOn(true);
   }
 
   function onPeerClose() {
-    props.setPlayerNum(6)
-    props.setGameOn(false)
+    props.setPlayerNum(6);
+    props.setGameOn(false);
     props.setConn(undefined);
     props.setPeer(undefined);
   }
@@ -36,8 +36,8 @@ export function TTTLogin(props: TTTLoginProps) {
       props.setPeer(peer);
       peer.on("connection", function(conn) {
         onConnOpen(conn);
-        props.setOppUsername(conn.peer)
-        props.setPlayerNum(2)
+        props.setOppUsername(conn.peer);
+        props.setPlayerNum(2);
       });
       peer.on("close", function() {
         onPeerClose();
@@ -54,7 +54,7 @@ export function TTTLogin(props: TTTLoginProps) {
         const conn = peer.connect(props.oppUsername);
         conn.on("open", function() {
           onConnOpen(conn);
-          props.setPlayerNum(1)
+          props.setPlayerNum(1);
         });
 
       }
@@ -64,40 +64,39 @@ export function TTTLogin(props: TTTLoginProps) {
   }
 
   useEffect(() => {
-    let tmpMsg = "Connect to a game"
-    switch (props.playerNum){
-      case 3: tmpMsg = "You won against " + props.oppUsername; break;
-      case 4: tmpMsg = "You lost against " + props.oppUsername; break;
-      case 5: tmpMsg = "Error: Game corrupted"; break;
-      case 6: tmpMsg = "Error: Disconnected"; break
+    let tmpMsg = "Connect to a game";
+    switch (props.playerNum) {
+      case 3:
+        tmpMsg = "You won against " + props.oppUsername;
+        break;
+      case 4:
+        tmpMsg = "You lost against " + props.oppUsername;
+        break;
+      case 5:
+        tmpMsg = "Error: Game corrupted";
+        break;
+      case 6:
+        tmpMsg = "Error: Disconnected";
+        break;
     }
-    setMsg(tmpMsg)
+    setMsg(tmpMsg);
   }, [props.playerNum]);
 
   return (
     <>
       <h2>Peer-Tac-Toe</h2>
       <h3>{msg}</h3>
-      <div>
-        <p><label htmlFor={"username-input"}>Choose your Username:</label></p>
-        <p><input id={"username-input"} type="text" value={props.username}
-                  onChange={(e) => props.setUsername(e.target.value)}
-                  disabled={!!props.peer} />
-        </p>
-        <p>
-          <button onClick={setupPeer}
-                  disabled={!!props.peer}>Connect
-          </button>
-        </p>
-      </div>
-      <div>
-        <p><label htmlFor={"oppusername-input"}>Your opponents Username:</label></p>
-        <p><input id={"oppusername-input"} type="text" value={props.oppUsername}
-                  onChange={(e) => props.setOppUsername(e.target.value)} disabled={!props.peer} /></p>
-        <p>
-          <button onClick={connectToGame} disabled={!props.peer}>Connect to Game</button>
-        </p>
-      </div>
+      <label htmlFor={"username-input"}>Choose your Username:</label>
+      <input id={"username-input"} type="text" value={props.username}
+             onChange={(e) => props.setUsername(e.target.value)}
+             disabled={!!props.peer} />
+      <button onClick={setupPeer}
+              disabled={!!props.peer}>Connect
+      </button>
+      <label htmlFor={"oppusername-input"}>Your opponents Username:</label>
+      <input id={"oppusername-input"} type="text" value={props.oppUsername}
+             onChange={(e) => props.setOppUsername(e.target.value)} disabled={!props.peer} />
+      <button onClick={connectToGame} disabled={!props.peer}>Connect to Game</button>
     </>
   );
 }

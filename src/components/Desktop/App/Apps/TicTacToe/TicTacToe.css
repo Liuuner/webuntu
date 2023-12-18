@@ -1,3 +1,49 @@
-.ttt-btn:disabled{
+#tic-tac-toe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+#ttt-game {
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 1/1; !important;
+    border-collapse: collapse;
+}
+
+#ttt-game td {
+    border: 1px white solid;
+}
+
+#ttt-game tr:last-child td {
+    border-bottom: none;
+}
+
+#ttt-game tr:first-child td {
+    border-top: none;
+}
+
+#ttt-game tr td:first-child {
+    border-left: none;
+}
+
+#ttt-game tr td:last-child {
+    border-right: none;
+}
+
+.ttt-btn {
+    height: 100%;
+    width: 100%;
+    font-size: 5rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.ttt-btn:disabled {
     background-color: pink;
+    cursor: not-allowed;
+    border: none;
 }

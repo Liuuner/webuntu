@@ -115,7 +115,7 @@ export function TTTGame(props: TTTGameProps) {
   }
 
   return (
-    <table>
+    <table id={"ttt-game"}>
       <tbody>
         <TTTRow rowIndex={1} isBtnDisabled={isBtnDisabled} getBtnState={getBtnState} setField={setField} />
         <TTTRow rowIndex={2} isBtnDisabled={isBtnDisabled} getBtnState={getBtnState} setField={setField} />
