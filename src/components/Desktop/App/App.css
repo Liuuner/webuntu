@@ -1,7 +1,12 @@
 .app {
-    border-radius: 13px;
+    border-radius: 10px;
     position: relative;
     outline: #130610 1px solid;
+    
+    animation-name: exit_fullscreen;
+    animation-timing-function: ease-in;
+    animation-iteration-count: 1;
+    animation-duration: 150ms;
 }
 
 .fullscreenApp {
@@ -10,9 +15,9 @@
     width: 100%;
     left: 0;
     top: 0;
-    border: 1px #130610 solid;
-    transition: all,
-    ease-in 200ms;
+    outline: #130610 1px solid;
+    
+    transition: top, left, width, height, ease-in 150ms;
     
     .appMenuBar {
         border-radius: 0;
@@ -36,7 +41,7 @@
 }
 
 .appContent {
-    height: 100%;
+    height: calc(100% - 35px);
     width: 100%;
 }
 
@@ -62,10 +67,6 @@
     height: 15px; /*magic to turn square into circle*/
     /*background: white;*/
     border-radius: 100%;
-}
-
-.resizer.line {
-    /*background: #74f442;*/
 }
 
 .resizer.top,
@@ -149,7 +150,7 @@
     
     cursor: auto;
     
-    transition: ease 50ms;
+    transition: all ease 50ms;
     
     &:hover {
         background-color: #e95420;
@@ -164,7 +165,11 @@
 .appBarIcons {
     display: flex;
     align-items: center;
-    height: 100%;
+    height: 35px;
+    
+    position: absolute;
+    top: 0;
+    right: 0;
     
     > div {
         margin-right: 10px;
@@ -175,6 +180,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
     height: 100%;
     width: 100%;
 }

@@ -1,6 +1,9 @@
 import "./App.css";
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { WindowCloseIcon } from "./WindowCloseIcon.tsx";
+import React, { PropsWithChildren, useRef, useState } from "react";
+import { WindowRoundedIcon } from "./WindowRoundedIcon.tsx";
+import { IconClose } from "../../../icons";
+import MinimiseBar from "../../../icons/icons/MinimiseBar.tsx";
+import MaximiseBar from "../../../icons/icons/MaximiseBar.tsx";
 
 type Area = {
   top: number;
@@ -26,6 +29,7 @@ type AppProps = {
   initialSize?: { height: number; width: number };
   appBarWidth?: number;
   infoBarHeight?: number;
+  setIsFullscreenPreview: (value: boolean) => void;
 };
 
 const App = ({
@@ -34,13 +38,15 @@ const App = ({
                initialSize = { height: 300, width: 550 },
                appBarWidth = 70,
                infoBarHeight = 23,
-               children = "content"
+               children = "content",
+               setIsFullscreenPreview
              }: PropsWithChildren<AppProps>) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const isPrepareFullscreenRef = useRef<boolean>(false);
 
   const [area, setArea] = useState<Area>({
-    top: 0,
-    left: 0,
+    top: window.innerHeight / 2 - initialSize.height / 2,
+    left: window.innerWidth / 2 - initialSize.width / 2,
     height: initialSize.height,
     width: initialSize.width
   });
@@ -48,26 +54,14 @@ const App = ({
   // TODO in store
   const APP_MENUBAR_HEIGHT = 35;
 
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      const rect = ref.current?.getBoundingClientRect();
-      setArea({
-        ...area,
-        top: window.innerHeight / 2 - rect.height / 2,
-        left: window.innerWidth / 2 - rect.width / 2
-      });
-    }
-  }, [ref]);
-
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (isFullScreen) return;
-    e.preventDefault();
-    if (isFullScreen) return;
+    e.stopPropagation();
+    e.preventDefault(); //not working
+
+    const originalClientY = e.clientY;
 
     const target = e.currentTarget;
-    const offsetLeft =
+    const offsetLeft = isFullScreen ? (e.clientX - appBarWidth) / (window.innerWidth - appBarWidth) * area.width + appBarWidth :
       e.clientX - target.getBoundingClientRect().left + appBarWidth;
     const offsetTop =
       e.clientY - target.getBoundingClientRect().top + infoBarHeight;
@@ -78,8 +72,16 @@ const App = ({
     function drag(e: MouseEvent) {
       e.preventDefault();
 
+      if (isFullScreen && Math.abs(originalClientY - e.clientY) > 10) {
+        // 10 is the tolerance until the app exits fullscreen (how much the mouse has to move)
+        setIsFullScreen(false);
+      }
+
       const newX = e.clientX - offsetLeft;
       const newY = e.clientY - offsetTop;
+
+      isPrepareFullscreenRef.current = newY < 0;
+      setIsFullscreenPreview(newY < 0);
 
       setArea({
         ...area,
@@ -95,6 +97,11 @@ const App = ({
     }
 
     function clear() {
+      if (isPrepareFullscreenRef.current) {
+        setIsFullScreen(true);
+        isPrepareFullscreenRef.current = false;
+        setIsFullscreenPreview(false);
+      }
       document.onmousemove = null;
       document.onmouseup = null;
     }
@@ -213,7 +220,6 @@ const App = ({
     }
   }
 
-  // TODO to inset
   const areaMapper = ({ top, left, height, width }: Area) => ({
     top: `${top}px`,
     left: `${left}px`,
@@ -222,28 +228,45 @@ const App = ({
   });
 
   return (
-    <div
-      className={isFullScreen ? "fullscreenApp" : "app"}
-      style={isFullScreen ? {} : areaMapper(area)}
-      ref={ref}
-    >
+    <>
+      <style>
+        {
+          `
+@keyframes exit_fullscreen {
+  0% {height: 100%; width: 100%; top: 0; left: 0;}
+  100% {height: ${area.height}px; width: ${area.width}px; top: ${area.top}px; left: ${area.left}px;}
+}
+          `
+        }
+      </style>
       <div
-        className={"appMenuBar"}
-        onMouseDown={draggable}
-        onDoubleClick={() => setIsFullScreen((prev) => !prev)}
+        className={isFullScreen ? "fullscreenApp" : "app"}
+        style={isFullScreen ? {} : areaMapper(area)}
       >
-        <div className="applicationTitle">
-          {applicationTitle}
+        <div
+          className={"appMenuBar"}
+          onMouseDown={draggable}
+          onDoubleClick={() => setIsFullScreen((prev) => !prev)}
+        >
+          <div className="applicationTitle">
+            {applicationTitle}
+          </div>
+          <div className="appBarIcons">
+            <WindowRoundedIcon onClose={(e) => e.stopPropagation()}>
+              <MinimiseBar />
+            </WindowRoundedIcon>
+            <WindowRoundedIcon onClose={() => setIsFullScreen(!isFullScreen)}>
+              <MaximiseBar />
+            </WindowRoundedIcon>
+            <WindowRoundedIcon onClose={() => console.log("closed")}>
+              <IconClose color={"#FFF"} />
+            </WindowRoundedIcon>
+          </div>
         </div>
-        <div className="appBarIcons">
-          <WindowCloseIcon onClose={() => console.log("closed")} />
-          <WindowCloseIcon onClose={() => console.log("closed")} />
-          <WindowCloseIcon onClose={() => console.log("closed")} />
-        </div>
+        <div className={"appContent"}>{children}</div>
+        {!isFullScreen && <Resizers resizable={resizable} />}
       </div>
-      <div className={"appContent"}>{children}</div>
-      {!isFullScreen && <Resizers resizable={resizable} />}
-    </div>
+    </>
   );
 };
 
