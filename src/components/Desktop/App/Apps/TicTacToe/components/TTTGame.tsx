@@ -100,18 +100,27 @@ export function TTTGame(props: TTTGameProps) {
     return;
   }
 
+
   function isBtnDisabled(index: number): boolean {
     return gameState.filter(state => state == 0).length % 2 == props.playerNum - 1 || gameState[index] != 0;
   }
 
-  function getBtnState(index: number): string {
+  function getBtnState(index: number): JSX.Element | string{
     switch (gameState[index]) {
       case 1:
         return "X";
       case 2:
         return "O";
     }
-    return "_";
+    if (gameState.filter(state => state == 0).length % 2 != props.playerNum - 1){
+      switch (props.playerNum){
+        case 1:
+          return "X";
+        case 2:
+          return "O";
+      }
+    }
+    return <>&emsp;</>
   }
 
   return (

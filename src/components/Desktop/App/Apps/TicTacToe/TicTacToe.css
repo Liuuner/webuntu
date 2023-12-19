@@ -9,19 +9,24 @@
 #ttt-game {
     height: 100%;
     max-width: 100%;
-    aspect-ratio: 1/1; !important;
     border-collapse: collapse;
+    aspect-ratio: 1/1 !important;
+}
+
+#ttt-game tr{
+
 }
 
 #ttt-game td {
     border: 1px white solid;
+    aspect-ratio: 1/1 !important;
 }
 
-#ttt-game tr:last-child td {
+#ttt-game tbody tr:last-child td {
     border-bottom: none;
 }
 
-#ttt-game tr:first-child td {
+#ttt-game tbody tr:first-child td {
     border-top: none;
 }
 
@@ -40,10 +45,16 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
+    color: transparent;
+    aspect-ratio: 1/1 !important;
 }
 
 .ttt-btn:disabled {
-    background-color: pink;
     cursor: not-allowed;
     border: none;
+    color: white;
+}
+
+.ttt-btn:hover{
+    color: white;
 }

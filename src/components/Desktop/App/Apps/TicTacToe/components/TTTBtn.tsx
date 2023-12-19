@@ -1,7 +1,7 @@
 type TTTBtnProps = {
   btnIndex: number;
   isBtnDisabled: (index: number) => boolean;
-  getBtnState: (index: number) => string;
+  getBtnState: (index: number) => string | JSX.Element;
   setField: (index: number) => void;
 }
 
