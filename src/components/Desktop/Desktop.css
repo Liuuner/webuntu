@@ -2,3 +2,26 @@
     height: 100%;
     width: 100%;
 }
+
+#fullscreenPreview {
+    position: absolute;
+    margin: 10px;
+    
+    height: 0;
+    width: 0;
+    left: calc((100% - 70px) / 2 + 70px - 10px);
+    transition: ease-in-out 200ms;
+    
+    &.active {
+        left: 70px;
+        width: calc(100% - 70px - 20px); /* due to position: absolute the width 100% is the full width and height of the innerWindow. With Position relative this problem is solved but then the app doesn't like it!*/
+        height: calc(100% - 23px - 20px);
+        
+        border-radius: 10px;
+        background-color: #FFF2;
+        backdrop-filter: blur(13px);
+        outline: #FFF3 2px solid;
+        
+        transition: ease-in-out 200ms;
+    }
+}

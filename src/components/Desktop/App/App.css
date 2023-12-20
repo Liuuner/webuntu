@@ -1,7 +1,12 @@
 .app {
-    border-radius: 13px;
+    border-radius: 10px;
     position: relative;
     outline: #130610 1px solid;
+    
+    animation-name: exit_fullscreen;
+    animation-timing-function: ease-in;
+    animation-iteration-count: 1;
+    animation-duration: 150ms;
 }
 
 .fullscreenApp {
@@ -10,20 +15,25 @@
     width: 100%;
     left: 0;
     top: 0;
-    border: 1px #130610 solid;
-    transition: all,
-    ease-in 200ms;
+    outline: #130610 1px solid;
+    
+    transition: top, left, width, height, ease-in 150ms;
+    
+    .appMenuBar {
+        border-radius: 0;
+    }
 }
 
 .appMenuBar {
     height: 35px;
     width: 100%;
     
+    display: flex;
+    
     border-top-right-radius: 13px;
     border-top-left-radius: 13px;
     border-bottom: 2px #1a1a1a solid;
     
-    cursor: move;
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -31,7 +41,7 @@
 }
 
 .appContent {
-    height: 100%;
+    height: calc(100% - 35px);
     width: 100%;
 }
 
@@ -56,10 +66,7 @@
     width: 15px;
     height: 15px; /*magic to turn square into circle*/
     /*background: white;*/
-}
-
-.resizer.line {
-    /*background: #74f442;*/
+    border-radius: 100%;
 }
 
 .resizer.top,
@@ -128,4 +135,52 @@
     bottom: -5px;
     right: -5px;
     cursor: nwse-resize;
+}
+
+
+.WindowCloseIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background-color: #333;
+    
+    aspect-ratio: 1/1;
+    max-height: 50%;
+    
+    cursor: auto;
+    
+    transition: all ease 50ms;
+    
+    &:hover {
+        background-color: #e95420;
+    }
+    
+    > svg {
+        height: 80%;
+        aspect-ratio: 1/1;
+    }
+}
+
+.appBarIcons {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    
+    position: absolute;
+    top: 0;
+    right: 0;
+    
+    > div {
+        margin-right: 10px;
+    }
+}
+
+.applicationTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    height: 100%;
+    width: 100%;
 }
