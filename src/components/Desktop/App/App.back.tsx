@@ -1,3 +1,4 @@
+/*
 import "./App.css";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -68,7 +69,7 @@ function AppBack() {
   }
 
   return (
-    <div className={"app"} style={position} ref={ref}>
+    <div className={"app"} style={position}/!* ref={ref}*!/>
       <div className={"appMenuBar"} onMouseDown={draggable}>
         {" "}
         Application
@@ -79,3 +80,4 @@ function AppBack() {
 }
 
 export default AppBack;
+*/
