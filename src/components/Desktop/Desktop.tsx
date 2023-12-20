@@ -1,15 +1,16 @@
 import App from "./App/App.tsx";
 import { TicTacToe } from "./App/Apps/TicTacToe/TicTacToe.tsx";
+import "./Desktop.css";
+import { useState } from "react";
 
 function Desktop() {
+  const [isFullscreenPreview, setIsFullscreenPreview] = useState<boolean>(false);
+
   return (
     <main id={"desktop"}>
-      {/*<App applicationTitle={"Settings"}>
-
-            </App>*/}
-
-      <App applicationTitle={"Peer-Tac-Toe"}>
-        <TicTacToe />
+      <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
+      <App applicationTitle={"Application Title"} setIsFullscreenPreview={setIsFullscreenPreview}>
+        <TicTacToe/>
       </App>
     </main>
   );

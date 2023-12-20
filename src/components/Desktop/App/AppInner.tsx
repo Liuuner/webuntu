@@ -1,3 +1,4 @@
+/*
 import "./App.css";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -63,3 +64,4 @@ function AppInner() {
 }
 
 export default AppInner;
+*/

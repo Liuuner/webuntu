@@ -3,14 +3,15 @@ import { AppModel } from "./model/AppModel.ts";
 import InfoBar from "./components/InfoBar/InfoBar.tsx";
 import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
+import IMAGES from "./components/AppBar/Images.ts";
 
 function Ubuntu() {
   const [apps, setApps] = useState<AppModel[]>([
-    { name: "Firefox", icon: "/app-icons/firefox-icon.png" },
-    { name: "LibreOffice", icon: "/app-icons/libre-office-icon.png" },
-    { name: "Rhythmbox", icon: "/app-icons/rhythmbox-icon.png" },
-    { name: "Settings", icon: "/app-icons/settings-icon.png" },
-    { name: "Help", icon: "/app-icons/help-icon.png" }
+    { name: "Firefox", icon: IMAGES.firefox },
+    { name: "LibreOffice", icon: IMAGES.libreOffice },
+    { name: "Rhythmbox", icon: IMAGES.rhythmBox },
+    { name: "Settings", icon: IMAGES.settings },
+    { name: "Help", icon: IMAGES.help }
   ]);
 
   // TODO: Fullscreen

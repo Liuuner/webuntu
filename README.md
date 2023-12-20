@@ -54,6 +54,12 @@ This project is licensed under the ***[BaNaNa](https://www.youtube.com/watch?v=s
 > Inspired by the Ubuntu desktop environment.
 > Built with Vite, React and Node.js.
 
+## Resources
+- https://vanillaframework.io/docs
+- https://www.figma.com/file/H6MSsN3taoXXOJCPUbIImQ/Design-System-Library?type=design&node-id=2932-15704&mode=design&t=PKBeuvbkZBApfFRd-0
+- https://www.figma.com/file/r7uLTd0hdEi553MP4wNh2Z/Ubuntu-UI-(Community)?type=design&node-id=0-1&mode=design&t=CCaLmUhAVE3hVIcS-0
+- Icons: https://github.com/canonical/vanilla-framework/blob/main/scss/_base_icon-definitions.scss
+
 ## Contact
 
 For any questions or feedback, please contact [your.email@example.com].
