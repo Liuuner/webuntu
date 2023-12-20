@@ -1,6 +1,7 @@
 import "./AppBar.css";
 import { AppModel } from "../../model/AppModel.ts";
 import { useAppSelector } from "../../app/hooks.ts";
+import IMAGES from "./Images.ts";
 
 type AppBarProps = {
   apps: AppModel[];
@@ -21,7 +22,7 @@ const AppBar = ({ apps }: AppBarProps) => {
         ))}
       </div>
       <div id={"menuIcon"}>
-        <img src="/app-icons/menu-icon.png" alt="Menu" />
+        <img src={IMAGES.menu} alt="Menu" />
       </div>
     </aside>
   );
