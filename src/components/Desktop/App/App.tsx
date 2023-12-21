@@ -20,7 +20,7 @@ enum Direction {
   BOTTOM_RIGHT,
   BOTTOM,
   BOTTOM_LEFT,
-  LEFT,
+  LEFT
 }
 
 type AppProps = {
@@ -30,17 +30,21 @@ type AppProps = {
   appBarWidth?: number;
   infoBarHeight?: number;
   setIsFullscreenPreview: (value: boolean) => void;
+  index: number;
+  onSelectApp: (i: number) => void;
 };
 
-const App = ({
+const App: React.FC<PropsWithChildren<AppProps>> = ({
                applicationTitle = "Application",
                minimumSize = { height: 250, width: 400 },
                initialSize = { height: 300, width: 550 },
                appBarWidth = 70,
                infoBarHeight = 23,
                children = "content",
-               setIsFullscreenPreview
-             }: PropsWithChildren<AppProps>) => {
+                                                      setIsFullscreenPreview,
+                                                      index,
+                                                      onSelectApp
+                                                    }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const isPrepareFullscreenRef = useRef<boolean>(false);
 
@@ -51,8 +55,28 @@ const App = ({
     width: initialSize.width
   });
 
+  const handleClickApp = () => {
+    onSelectApp(index);
+  };
+
   // TODO in store
   const APP_MENUBAR_HEIGHT = 35;
+
+  const calcRelativeCoords = (coordinate: number, direction: "X" | "Y") => {
+    if (direction === "X") {
+      return coordinate - appBarWidth;
+    } else {
+      return coordinate - infoBarHeight;
+    }
+  };
+
+  const calcAbsoluteCoords = (coordinate: number, direction: "X" | "Y") => {
+    if (direction === "X") {
+      return coordinate + appBarWidth;
+    } else {
+      return coordinate + infoBarHeight;
+    }
+  };
 
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation();
@@ -85,14 +109,16 @@ const App = ({
 
       setArea({
         ...area,
-        top: Math.min(
-          window.innerHeight - infoBarHeight - APP_MENUBAR_HEIGHT,
-          Math.max(0, newY)
-        ),
-        left: Math.min(
-          window.innerWidth - appBarWidth - area.width,
-          Math.max(0, newX)
-        )
+        top: calcAbsoluteCoords(
+          Math.min(
+            calcRelativeCoords(window.innerHeight, "Y") - APP_MENUBAR_HEIGHT,
+            Math.max(0, newY)
+          ), "Y"),
+        left: calcAbsoluteCoords(
+          Math.min(
+            calcRelativeCoords(window.innerWidth, "X") - area.width,
+            Math.max(0, newX)
+          ), "X")
       });
     }
 
@@ -231,21 +257,25 @@ const App = ({
     <>
       <style>
         {
-          `
+          /*`
 @keyframes exit_fullscreen {
   0% {height: 100%; width: 100%; top: 0; left: 0;}
   100% {height: ${area.height}px; width: ${area.width}px; top: ${area.top}px; left: ${area.left}px;}
 }
-          `
+          `*/
         }
       </style>
       <div
         className={isFullScreen ? "fullscreenApp" : "app"}
         style={isFullScreen ? {} : areaMapper(area)}
+        onMouseDown={handleClickApp}
       >
         <div
           className={"appMenuBar"}
-          onMouseDown={draggable}
+          onMouseDown={(e) => {
+            handleClickApp();
+            draggable(e);
+          }}
           onDoubleClick={() => setIsFullScreen((prev) => !prev)}
         >
           <div className="applicationTitle">

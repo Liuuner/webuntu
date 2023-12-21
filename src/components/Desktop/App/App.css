@@ -1,6 +1,6 @@
 .app {
     border-radius: 10px;
-    position: relative;
+    position: absolute;
     outline: #130610 1px solid;
     
     animation-name: exit_fullscreen;
