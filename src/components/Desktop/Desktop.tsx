@@ -1,25 +1,45 @@
 import App from "./App/App.tsx";
 import "./Desktop.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";
 
+type DesktopProps = {
+  openedAppConfigs: AppConfigType[],
+  setOpenedAppConfigs: React.Dispatch<React.SetStateAction<AppConfigType[]>>
+}
 
-function Desktop() {
+function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
   const [isFullscreenPreview, setIsFullscreenPreview] = useState<boolean>(false);
 
-  const [openedAppConfigs, setOpenedAppConfigs] = useState<AppConfigType[]>([
-    { applicationTitle: "Application Title 1" },
-    { applicationTitle: "Application Title 2" }
-  ]);
+  useEffect(() => {
+    console.log(openedAppConfigs);
+  }, [openedAppConfigs]);
+
+  const getMaxZIndex = () => {
+    return Math.max(...openedAppConfigs.map(config => config.zIndex));
+  };
 
   const handleSelectApp = (index: number) => {
-    const updatedOpenedApps = [...openedAppConfigs];
+    const newArray = [...openedAppConfigs];
 
-    const removedApp = updatedOpenedApps.splice(index, 1)[0];
+    let newZIndex = getMaxZIndex();
 
-    updatedOpenedApps.push(removedApp);
+    if (newZIndex != newArray[index].zIndex) {
+      newZIndex++;
+    }
 
-    setOpenedAppConfigs(updatedOpenedApps);
+    newArray[index] = {
+      ...newArray[index],
+      zIndex: newZIndex
+    };
+
+    setOpenedAppConfigs(newArray);
+  };
+
+  const handleCloseApp = (index: number) => {
+    setOpenedAppConfigs(oldValues => {
+      return oldValues.filter((_, i) => i !== index);
+    });
   };
 
   return (
@@ -28,8 +48,9 @@ function Desktop() {
 
       {
         openedAppConfigs.map((appConfig, i) => (
-          <App index={i} applicationTitle={appConfig.applicationTitle}
-               onSelectApp={handleSelectApp}
+          <App key={appConfig.id} zIndex={appConfig.zIndex} applicationTitle={appConfig.app.name}
+               onSelectApp={() => handleSelectApp(i)}
+               onCloseApp={() => handleCloseApp(i)}
                setIsFullscreenPreview={setIsFullscreenPreview}>
             <div />
           </App>

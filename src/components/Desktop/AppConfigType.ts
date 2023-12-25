@@ -1,3 +1,7 @@
+import { AppModel } from "../../model/AppModel.ts";
+
 export type AppConfigType = {
-  applicationTitle: string;
+  id: number,
+  app: AppModel,
+  zIndex: number;
 }

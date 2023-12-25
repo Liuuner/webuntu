@@ -30,20 +30,22 @@ type AppProps = {
   appBarWidth?: number;
   infoBarHeight?: number;
   setIsFullscreenPreview: (value: boolean) => void;
-  index: number;
-  onSelectApp: (i: number) => void;
+  zIndex: number;
+  onSelectApp: () => void;
+  onCloseApp: () => void;
 };
 
 const App: React.FC<PropsWithChildren<AppProps>> = ({
-               applicationTitle = "Application",
-               minimumSize = { height: 250, width: 400 },
-               initialSize = { height: 300, width: 550 },
-               appBarWidth = 70,
-               infoBarHeight = 23,
-               children = "content",
+                                                      applicationTitle = "Application",
+                                                      minimumSize = { height: 250, width: 400 },
+                                                      initialSize = { height: 300, width: 550 },
+                                                      appBarWidth = 70,
+                                                      infoBarHeight = 23,
+                                                      children = "content",
                                                       setIsFullscreenPreview,
-                                                      index,
-                                                      onSelectApp
+                                                      zIndex,
+                                                      onSelectApp,
+                                                      onCloseApp
                                                     }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const isPrepareFullscreenRef = useRef<boolean>(false);
@@ -56,7 +58,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
   });
 
   const handleClickApp = () => {
-    onSelectApp(index);
+    onSelectApp();
   };
 
   // TODO in store
@@ -267,7 +269,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
       </style>
       <div
         className={isFullScreen ? "fullscreenApp" : "app"}
-        style={isFullScreen ? {} : areaMapper(area)}
+        style={{ ...(isFullScreen ? {} : areaMapper(area)), zIndex: zIndex }}
         onMouseDown={handleClickApp}
       >
         <div
@@ -288,12 +290,12 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
             <WindowRoundedIcon onClose={() => setIsFullScreen(!isFullScreen)}>
               <MaximiseBar />
             </WindowRoundedIcon>
-            <WindowRoundedIcon onClose={() => console.log("closed")}>
+            <WindowRoundedIcon onClose={onCloseApp}>
               <IconClose color={"#FFF"} />
             </WindowRoundedIcon>
           </div>
         </div>
-        <div className={"appContent"}>{children}</div>
+        <div className={"appContent"}>{children} {zIndex}</div>
         {!isFullScreen && <Resizers resizable={resizable} />}
       </div>
     </>
