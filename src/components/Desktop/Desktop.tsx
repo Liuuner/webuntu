@@ -48,11 +48,12 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
 
       {
         openedAppConfigs.map((appConfig, i) => (
-          <App key={appConfig.id} zIndex={appConfig.zIndex} applicationTitle={appConfig.app.name}
+          <App key={appConfig.id}
+               zIndex={appConfig.zIndex}
+               app={appConfig.app}
                onSelectApp={() => handleSelectApp(i)}
                onCloseApp={() => handleCloseApp(i)}
                setIsFullscreenPreview={setIsFullscreenPreview}>
-            <div />
           </App>
         ))
       }

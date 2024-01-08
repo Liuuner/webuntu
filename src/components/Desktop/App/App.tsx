@@ -4,6 +4,7 @@ import { WindowRoundedIcon } from "./WindowRoundedIcon.tsx";
 import { IconClose } from "../../../icons";
 import MinimiseBar from "../../../icons/icons/MinimiseBar.tsx";
 import MaximiseBar from "../../../icons/icons/MaximiseBar.tsx";
+import { AppModel } from "../../../model/AppModel.ts";
 
 type Area = {
   top: number;
@@ -24,28 +25,28 @@ enum Direction {
 }
 
 type AppProps = {
-  applicationTitle?: string;
   minimumSize?: { height: number; width: number };
   initialSize?: { height: number; width: number };
-  appBarWidth?: number;
-  infoBarHeight?: number;
   setIsFullscreenPreview: (value: boolean) => void;
   zIndex: number;
   onSelectApp: () => void;
   onCloseApp: () => void;
+  app: AppModel;
 };
 
+// TODO in store
+const APP_MENUBAR_HEIGHT = 35;
+const APP_BAR_WIDTH = 70;
+const INFO_BAR_HEIGHT = 23;
+
 const App: React.FC<PropsWithChildren<AppProps>> = ({
-                                                      applicationTitle = "Application",
                                                       minimumSize = { height: 250, width: 400 },
                                                       initialSize = { height: 300, width: 550 },
-                                                      appBarWidth = 70,
-                                                      infoBarHeight = 23,
-                                                      children = "content",
                                                       setIsFullscreenPreview,
                                                       zIndex,
                                                       onSelectApp,
-                                                      onCloseApp
+                                                      onCloseApp,
+                                                      app
                                                     }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const isPrepareFullscreenRef = useRef<boolean>(false);
@@ -61,22 +62,20 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     onSelectApp();
   };
 
-  // TODO in store
-  const APP_MENUBAR_HEIGHT = 35;
 
   const calcRelativeCoords = (coordinate: number, direction: "X" | "Y") => {
     if (direction === "X") {
-      return coordinate - appBarWidth;
+      return coordinate - APP_BAR_WIDTH;
     } else {
-      return coordinate - infoBarHeight;
+      return coordinate - INFO_BAR_HEIGHT;
     }
   };
 
   const calcAbsoluteCoords = (coordinate: number, direction: "X" | "Y") => {
     if (direction === "X") {
-      return coordinate + appBarWidth;
+      return coordinate + APP_BAR_WIDTH;
     } else {
-      return coordinate + infoBarHeight;
+      return coordinate + INFO_BAR_HEIGHT;
     }
   };
 
@@ -87,10 +86,10 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     const originalClientY = e.clientY;
 
     const target = e.currentTarget;
-    const offsetLeft = isFullScreen ? (e.clientX - appBarWidth) / (window.innerWidth - appBarWidth) * area.width + appBarWidth :
-      e.clientX - target.getBoundingClientRect().left + appBarWidth;
+    const offsetLeft = isFullScreen ? (e.clientX - APP_BAR_WIDTH) / (window.innerWidth - APP_BAR_WIDTH) * area.width + APP_BAR_WIDTH :
+      e.clientX - target.getBoundingClientRect().left + APP_BAR_WIDTH;
     const offsetTop =
-      e.clientY - target.getBoundingClientRect().top + infoBarHeight;
+      e.clientY - target.getBoundingClientRect().top + INFO_BAR_HEIGHT;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -141,20 +140,20 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
   ) {
     e.preventDefault();
 
-    const originalX = e.clientX - appBarWidth;
-    const originalY = e.clientY - infoBarHeight;
+    const originalX = e.clientX - APP_BAR_WIDTH;
+    const originalY = e.clientY - INFO_BAR_HEIGHT;
 
     document.onmousemove = resize;
     document.onmouseup = clear;
 
     function resize(e: MouseEvent) {
       const newX = Math.min(
-        window.innerWidth - appBarWidth,
-        Math.max(e.clientX - appBarWidth, 0)
+        window.innerWidth - APP_BAR_WIDTH,
+        Math.max(e.clientX - APP_BAR_WIDTH, 0)
       );
       const newY = Math.min(
-        window.innerHeight - infoBarHeight,
-        Math.max(e.clientY - infoBarHeight, 0)
+        window.innerHeight - INFO_BAR_HEIGHT,
+        Math.max(e.clientY - INFO_BAR_HEIGHT, 0)
       );
 
       const calcResizeBottom = (
@@ -172,11 +171,11 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
         width: Math.max(minimumSize?.width, area.width + newX - originalX)
       });
       const calcResizeTop = (area: Area, newY: number, originalY: number) => ({
-        top: newY,
+        top: newY + INFO_BAR_HEIGHT,
         height: Math.max(minimumSize?.height, area.height + originalY - newY)
       });
       const calcResizeLeft = (area: Area, newX: number, originalX: number) => ({
-        left: newX,
+        left: newX + APP_BAR_WIDTH,
         width: Math.max(minimumSize?.width, area.width + originalX - newX)
       });
 
@@ -278,10 +277,10 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
             handleClickApp();
             draggable(e);
           }}
-          onDoubleClick={() => setIsFullScreen((prev) => !prev)}
+          onDoubleClick={() => setIsFullScreen((b) => !b)}
         >
           <div className="applicationTitle">
-            {applicationTitle}
+            {app.name}
           </div>
           <div className="appBarIcons">
             <WindowRoundedIcon onClose={(e) => e.stopPropagation()}>
@@ -295,7 +294,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
             </WindowRoundedIcon>
           </div>
         </div>
-        <div className={"appContent"}>{children} {zIndex}</div>
+        <div className={"appContent"}>{app.app()}</div>
         {!isFullScreen && <Resizers resizable={resizable} />}
       </div>
     </>
