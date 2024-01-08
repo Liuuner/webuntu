@@ -1,11 +1,7 @@
-/*
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "/app/hooks.ts";
-import {
-  setAppBarWidth,
-  setInfoBarHeight,
-  setPersonalisation
-} from "/features/personalisation/PersonalisationSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { setAppBarWidth, setInfoBarHeight } from "../../../features/personalisation/PersonalisationSlice.ts";
+
 
 function Settings() {
   const dispatch = useAppDispatch();
@@ -28,13 +24,8 @@ function Settings() {
         value={useAppSelector((state) => state.personalisation.infoBarHeight)}
         onChange={(e) => dispatch(setInfoBarHeight(e.target.valueAsNumber))}
       />
-
-      <button onClick={() => dispatch(setPersonalisation(originalValue))}>
-        REVERT
-      </button>
     </>
   );
 }
 
 export default Settings;
-*/
