@@ -5,9 +5,10 @@ import IMAGES from "./Images.ts";
 
 type AppBarProps = {
   apps: AppModel[];
+  onOpenApp: (app: AppModel) => void;
 };
 
-const AppBar = ({ apps }: AppBarProps) => {
+const AppBar = ({ apps, onOpenApp }: AppBarProps) => {
   const appBarWidth = useAppSelector(
     (state) => state.personalisation.appBarWidth
   );
@@ -16,7 +17,7 @@ const AppBar = ({ apps }: AppBarProps) => {
     <aside id={"appBar"}>
       <div id={"apps"}>
         {apps.map((app, index) => (
-          <div key={index} className={"appIcon"}>
+          <div onClick={() => onOpenApp(app)} key={index} className={"appIcon"}>
             <img src={app.icon} alt={app.name} />
           </div>
         ))}
