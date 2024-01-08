@@ -9,7 +9,7 @@ function Desktop() {
   return (
     <main id={"desktop"}>
       <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
-      <App applicationTitle={"Application Title"} setIsFullscreenPreview={setIsFullscreenPreview}>
+      <App applicationTitle={"Peer-Call"} setIsFullscreenPreview={setIsFullscreenPreview}>
         <PeerCall/>
       </App>
     </main>
