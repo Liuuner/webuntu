@@ -45,7 +45,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
   return (
     <main id={"desktop"}>
       <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
-
       {
         openedAppConfigs.map((appConfig, i) => (
           <App key={appConfig.id}
@@ -57,7 +56,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
           </App>
         ))
       }
-
     </main>
   );
 }
