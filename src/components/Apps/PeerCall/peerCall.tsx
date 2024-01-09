@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { MediaConnection, Peer } from "peerjs";
 import "./peerCall.css";
 
-export function PeerCall() {
+export default function PeerCall() {
   const [callId, setCallId] = useState("");
   const [peerId, setPeerId] = useState("");
   const [peer, setPeer] = useState<undefined | Peer>();

@@ -5,8 +5,7 @@ import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
 import IMAGES from "./components/AppBar/Images.ts";
 import { AppConfigType } from "./components/Desktop/AppConfigType.ts";
-import { DefaultApp, Settings } from "./components/Apps/Apps.ts";
-import { PeerCall } from "./components/Desktop/App/Apps/PeerCall/peerCall.tsx";
+import { DefaultApp, Settings, PeerCall } from "./components/Apps/Apps.ts";
 
 function Ubuntu() {
   const [apps, setApps] = useState<AppModel[]>([
