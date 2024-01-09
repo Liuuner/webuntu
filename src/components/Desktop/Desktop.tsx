@@ -1,4 +1,5 @@
 import App from "./App/App.tsx";
+import { PeerTacToe } from "../Apps/TicTacToe/PeerTacToe.tsx";
 import "./Desktop.css";
 import { useEffect, useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";
@@ -45,7 +46,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
   return (
     <main id={"desktop"}>
       <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
-
       {
         openedAppConfigs.map((appConfig, i) => (
           <App key={appConfig.id}
@@ -57,7 +57,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
           </App>
         ))
       }
-
     </main>
   );
 }

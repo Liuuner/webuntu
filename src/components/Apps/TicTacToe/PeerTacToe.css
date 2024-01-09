@@ -1,0 +1,60 @@
+#tic-tac-toe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+#ttt-game {
+    height: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    aspect-ratio: 1/1 !important;
+}
+
+#ttt-game tr{
+
+}
+
+#ttt-game td {
+    border: 1px white solid;
+    aspect-ratio: 1/1 !important;
+}
+
+#ttt-game tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#ttt-game tbody tr:first-child td {
+    border-top: none;
+}
+
+#ttt-game tr td:first-child {
+    border-left: none;
+}
+
+#ttt-game tr td:last-child {
+    border-right: none;
+}
+
+.ttt-btn {
+    height: 100%;
+    width: 100%;
+    font-size: 5rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: transparent;
+    aspect-ratio: 1/1 !important;
+}
+
+.ttt-btn:disabled {
+    cursor: not-allowed;
+    border: none;
+    color: white;
+}
+
+.ttt-btn:hover{
+    color: white;
+}
