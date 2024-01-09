@@ -45,6 +45,7 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
   return (
     <main id={"desktop"}>
       <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
+      <div id={"desktopSelect"} />
 
       {
         openedAppConfigs.map((appConfig, i) => (
