@@ -1,5 +1,5 @@
 import App from "./App/App.tsx";
-import { TicTacToe } from "./App/Apps/TicTacToe/TicTacToe.tsx";
+import { PeerTacToe } from "../Apps/TicTacToe/PeerTacToe.tsx";
 import "./Desktop.css";
 import { useEffect, useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";

@@ -1,10 +1,10 @@
-import "./TicTacToe.css";
+import "./PeerTacToe.css";
 import { useState } from "react";
 import { TTTGame } from "./components/TTTGame.tsx";
 import { TTTLogin } from "./components/TTTLogin.tsx";
 import { DataConnection, Peer } from "peerjs";
 
-export function TicTacToe() {
+export default function PeerTacToe() {
   const [peer, setPeer] = useState<Peer | undefined>(undefined);
   const [conn, setConn] = useState<DataConnection | undefined>(undefined);
   const [playerNum, setPlayerNum] = useState(0);

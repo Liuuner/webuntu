@@ -5,13 +5,12 @@ import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
 import IMAGES from "./components/AppBar/Images.ts";
 import { AppConfigType } from "./components/Desktop/AppConfigType.ts";
-import { DefaultApp, Settings } from "./components/Apps/Apps.ts";
-import { TicTacToe } from "./components/Desktop/App/Apps/TicTacToe/TicTacToe.tsx";
+import { DefaultApp, Settings, PeerTacToe } from "./components/Apps/Apps.ts";
 
 function Ubuntu() {
   const [apps, setApps] = useState<AppModel[]>([
     { name: "Firefox", icon: IMAGES.firefox, app: DefaultApp },
-    { name: "PeerTacToe", icon: IMAGES.peerTacToe, app: TicTacToe },
+    { name: "PeerTacToe", icon: IMAGES.peerTacToe, app: PeerTacToe },
     { name: "LibreOffice", icon: IMAGES.libreOffice, app: DefaultApp },
     { name: "Rhythmbox", icon: IMAGES.rhythmBox, app: DefaultApp },
     { name: "Settings", icon: IMAGES.settings, app: Settings },
