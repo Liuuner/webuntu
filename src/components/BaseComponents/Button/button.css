@@ -1,0 +1,16 @@
+.ubuntu-button {
+    background-color: var(--cool-grey);
+    color: #ffffff;
+    border: 1px solid #2c3134;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.ubuntu-button:hover {
+    background-color: #3c4245;
+    color: #ffffff;
+}

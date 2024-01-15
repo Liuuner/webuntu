@@ -3,6 +3,14 @@
 :root {
     --app-icon-width: 80%;
     --app-icon-img-width: 60%;
+    --dark-aubergine: #2C001E;
+    --light-aubergine: #77216F;
+    --mid-aubergine: #5E2750;
+    --ubuntu-orange: #E95420;
+    --warm-grey: #AEA79F;
+    --cool-grey: #333333;
+    --text-grey: #111111;
+    --canonical-aubergine: #772953;
 }
 
 html,

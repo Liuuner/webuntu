@@ -1,4 +1,4 @@
-# Webuntu - Where our devs write to many slogans into the readme
+# Webuntu - Where our devs write too many slogans into the readme
 # Webuntu - Safety is no priority
 # Webuntu - Where our bugs have more character than your typical '404' page.
 # Webuntu - Waiting builds character! Even our code takes breaks. 🐢
