@@ -100,7 +100,8 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
         top: (desktopSelectPos.y + "px"),
         left: (desktopSelectPos.x + "px"),
         height: (desktopSelectPos.height + "px"),
-        width: (desktopSelectPos.width + "px")
+        width: (desktopSelectPos.width + "px"),
+        display: (desktopSelectPos.width + desktopSelectPos.height > 0 ? "block" : "none")
       }} />
 
       {
