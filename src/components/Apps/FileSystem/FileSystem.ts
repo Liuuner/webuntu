@@ -29,7 +29,7 @@ interface MyFileSystemDirectoryEntry extends FileSystemDirectoryEntry, MyFileSys
 export function loadFilesystem(): Promise<FileSystem> {
   return new Promise((resolve, reject) => {
     // @ts-ignore
-    window.webkitRequestFileSystem(PERSISTENT, 1024 * 1024, resolve, reject);
+    window.webkitRequestFileSystem(PERSISTENT, 1048576, resolve, reject);
   });
 }
 
