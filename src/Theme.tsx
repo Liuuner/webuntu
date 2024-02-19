@@ -1,7 +1,9 @@
-import { useAppSelector } from "./app/hooks.ts";
+import { useAppSelector } from "./store/hooks.ts";
 
 export default function Theme() {
   const personalisation = useAppSelector((state) => state.personalisation);
+  const firstColor = "#2c2c2c";
+  const secondColor = "#222222";
   const style = `
 #infoBar {
     background-color: #000;
@@ -10,15 +12,15 @@ export default function Theme() {
     width: ${personalisation.appBarWidth}
 }
 .app {
-    background-color: ${personalisation.theme.firstColor};
+    background-color: ${firstColor};
 }
 
 .fullscreenApp {
-    background-color: ${personalisation.theme.firstColor};
+    background-color: ${firstColor};
 }
 
 .appMenuBar {
-    background-color: ${personalisation.theme.secondColor};
+    background-color: ${secondColor};
 }
 `;
 

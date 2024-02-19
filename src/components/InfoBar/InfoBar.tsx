@@ -1,7 +1,7 @@
 import "./InfoBar.css";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useAppSelector } from "../../app/hooks.ts";
+import { useAppSelector } from "../../store/hooks.ts";
 
 function InfoBar() {
   const infoBarHeight = useAppSelector(

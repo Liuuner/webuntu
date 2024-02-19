@@ -1,6 +1,6 @@
 import App from "./App/App.tsx";
 import "./Desktop.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";
 
 type DesktopProps = {
@@ -24,10 +24,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
     height: 0,
     width: 0
   });
-
-  useEffect(() => {
-    console.log(openedAppConfigs);
-  }, [openedAppConfigs]);
 
   const getMaxZIndex = () => {
     return Math.max(...openedAppConfigs.map(config => config.zIndex));

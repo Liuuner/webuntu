@@ -1,21 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import ThemeType from "./ThemeType.ts";
 
 interface PersonalisationState {
   appBarWidth: number;
   infoBarHeight: number;
-  theme: ThemeType;
 }
 
 const initialState: PersonalisationState = {
   appBarWidth: 70,
-  infoBarHeight: 23,
-  theme: {
-    fontColor: "#FFF",
-    firstColor: "#2c2c2c",
-    secondColor: "#222222",
-    accentColor: "#77216F"
-  },
+  infoBarHeight: 23
 };
 
 const personalisationSlice = createSlice({
@@ -27,13 +19,10 @@ const personalisationSlice = createSlice({
     },
     setInfoBarHeight: (state, action: PayloadAction<number>) => {
       state.infoBarHeight = action.payload;
-    },
-    setTheme: (state, action: PayloadAction<ThemeType>) => {
-      state.theme = action.payload;
-    },
-  },
+    }
+  }
 });
-export const { setAppBarWidth, setInfoBarHeight, setTheme } =
+export const { setAppBarWidth, setInfoBarHeight } =
   personalisationSlice.actions;
 
 export default personalisationSlice.reducer;

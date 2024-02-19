@@ -1,6 +1,6 @@
 import "./AppBar.css";
 import { AppModel } from "../../model/AppModel.ts";
-import { useAppSelector } from "../../app/hooks.ts";
+import { useAppSelector } from "../../store/hooks.ts";
 import IMAGES from "./Images.ts";
 
 type AppBarProps = {
