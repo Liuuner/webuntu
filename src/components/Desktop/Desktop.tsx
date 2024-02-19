@@ -2,17 +2,6 @@ import App from "./App/App.tsx";
 import "./Desktop.css";
 import React, { useEffect, useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";
-import {
-  loadFilesystem,
-  createDirectory,
-  createFile,
-  getDirectory,
-  getFile,
-  readDirectory,
-  readFile,
-  writeFile,
-  writeFileString
-} from "../Apps/FileSystem/FileSystem.ts";
 
 type DesktopProps = {
   openedAppConfigs: AppConfigType[],
@@ -38,8 +27,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
 
   useEffect(() => {
     console.log(openedAppConfigs);
-    // @ts-ignore
-    window.fs = { loadFilesystem, createDirectory, createFile, getDirectory, getFile, readDirectory, readFile, writeFile, writeFileString}
   }, [openedAppConfigs]);
 
   const getMaxZIndex = () => {

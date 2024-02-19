@@ -5,7 +5,7 @@ import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
 import IMAGES from "./components/AppBar/Images.ts";
 import { AppConfigType } from "./components/Desktop/AppConfigType.ts";
-import { DefaultApp, Settings } from "./components/Apps/Apps.ts";
+import { DefaultApp, FileExplorer, Settings } from "./components/Apps/Apps.ts";
 
 function Ubuntu() {
   const [apps, setApps] = useState<AppModel[]>([
@@ -14,7 +14,7 @@ function Ubuntu() {
     { name: "Rhythmbox", icon: IMAGES.rhythmBox, app: DefaultApp },
     { name: "Settings", icon: IMAGES.settings, app: Settings },
     { name: "Help", icon: IMAGES.help, app: DefaultApp },
-    { name: "StyledComponents", icon: IMAGES.components, app: DefaultApp }
+    { name: "FileExplorer", icon: IMAGES.components, app: FileExplorer }
   ]);
 
   const [openedAppConfigs, setOpenedAppConfigs] = useState<AppConfigType[]>([]);
