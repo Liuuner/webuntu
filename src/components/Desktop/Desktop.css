@@ -25,3 +25,12 @@
         transition: ease-in-out 200ms;
     }
 }
+
+#desktopSelect {
+    position: absolute;
+    border-radius: 1px;
+    background-color: #FFF2;
+    outline: #FFF7 2px solid;
+    height: 20px;
+    width: 20px;
+}
