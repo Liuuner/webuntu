@@ -5,11 +5,12 @@ import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
 import IMAGES from "./components/AppBar/Images.ts";
 import { AppConfigType } from "./components/Desktop/AppConfigType.ts";
-import { DefaultApp, Settings } from "./components/Apps/Apps.ts";
+import { DefaultApp, Settings, PeerCall } from "./components/Apps/Apps.ts";
 
 function Ubuntu() {
   const [apps, setApps] = useState<AppModel[]>([
     { name: "Firefox", icon: IMAGES.firefox, app: DefaultApp },
+    { name: "PeerCall", icon: IMAGES.peerCall, app: PeerCall },
     { name: "LibreOffice", icon: IMAGES.libreOffice, app: DefaultApp },
     { name: "Rhythmbox", icon: IMAGES.rhythmBox, app: DefaultApp },
     { name: "Settings", icon: IMAGES.settings, app: Settings },
