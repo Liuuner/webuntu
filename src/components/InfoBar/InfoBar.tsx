@@ -1,5 +1,5 @@
 import "./InfoBar.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useAppSelector } from "../../store/hooks.ts";
 
@@ -7,12 +7,19 @@ function InfoBar() {
   const infoBarHeight = useAppSelector(
     (state) => state.personalisation.infoBarHeight
   );
+  const infoBarTimeFormat = useAppSelector(
+    (state) => state.personalisation.infoBarTimeFormat
+  );
+  const intervalId = useRef<null | number>(null)
 
   const [time, setTime] = useState(dayjs().format("DD MMM HH:mm"));
 
   useEffect(() => {
-    setInterval(() => setTime(dayjs().format("DD MMM HH:mm")), 3000);
-  }, []);
+    if (intervalId.current){
+      clearInterval(intervalId.current)
+    }
+    intervalId.current = setInterval(() => setTime(dayjs().format(infoBarTimeFormat)), 1000);
+  }, [infoBarTimeFormat]);
 
   return (
     <header id={"infoBar"} style={{ height: infoBarHeight }}>
