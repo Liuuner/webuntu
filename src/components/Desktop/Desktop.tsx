@@ -1,4 +1,5 @@
 import App from "./App/App.tsx";
+import { PeerTacToe } from "../Apps/TicTacToe/PeerTacToe.tsx";
 import "./Desktop.css";
 import React, { useEffect, useState } from "react";
 import { AppConfigType } from "./AppConfigType.ts";
@@ -103,7 +104,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
         width: (desktopSelectPos.width + "px"),
         display: (desktopSelectPos.width + desktopSelectPos.height > 0 ? "block" : "none")
       }} />
-
       {
         openedAppConfigs.map((appConfig, i) => (
           <App key={appConfig.id}
@@ -115,7 +115,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
           </App>
         ))
       }
-
     </main>
   );
 }
