@@ -34,7 +34,7 @@ type AppProps = {
   app: AppModel;
 };
 
-// TODO in store
+// TODO in index
 const APP_MENUBAR_HEIGHT = 35;
 const APP_BAR_WIDTH = 70;
 const INFO_BAR_HEIGHT = 23;
@@ -58,7 +58,8 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     width: initialSize.width
   });
 
-  const handleClickApp = () => {
+  const handleClickApp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
     onSelectApp();
   };
 
@@ -95,6 +96,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     document.onmouseup = clear;
 
     function drag(e: MouseEvent) {
+      e.stopPropagation();
       e.preventDefault();
 
       if (isFullScreen && Math.abs(originalClientY - e.clientY) > 10) {
@@ -138,6 +140,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     direction: Direction
   ) {
+    e.stopPropagation();
     e.preventDefault();
 
     const originalX = e.clientX - APP_BAR_WIDTH;
@@ -269,12 +272,12 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
       <div
         className={isFullScreen ? "fullscreenApp" : "app"}
         style={{ ...(isFullScreen ? {} : areaMapper(area)), zIndex: zIndex }}
-        onMouseDown={handleClickApp}
+        onMouseDown={(e) => handleClickApp(e)}
       >
         <div
           className={"appMenuBar"}
           onMouseDown={(e) => {
-            handleClickApp();
+            handleClickApp(e);
             draggable(e);
           }}
           onDoubleClick={() => setIsFullScreen((b) => !b)}

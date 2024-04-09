@@ -1,7 +1,8 @@
-import { useAppSelector } from "./store/hooks.ts";
+import { useAppSelector } from "src/hooks/storeHooks.ts";
+
 
 export default function Theme() {
-  const personalisation = useAppSelector((state) => state.personalisation);
+  const personalisation = useAppSelector((state) => state.settings);
   const firstColor = "#2c2c2c";
   const secondColor = "#222222";
   const style = `

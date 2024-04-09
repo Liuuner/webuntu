@@ -2,6 +2,7 @@
     border-radius: 10px;
     position: absolute;
     outline: #130610 1px solid;
+    overflow: hidden;
     
     animation-name: exit_fullscreen;
     animation-timing-function: ease-in;

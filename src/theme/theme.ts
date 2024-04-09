@@ -3,7 +3,7 @@ import getAccentColor, { AccentColor } from "./AccentColors.ts";
 
 export type ThemeMode = "light" | "dark";
 
-const createWebuntuTheme = (themeMode: ThemeMode, accentColorName: AccentColor) => {
+function createWebuntuTheme(themeMode: ThemeMode, accentColorName: AccentColor) {
   const accentColor = getAccentColor(accentColorName);
   return createTheme({
     palette: {
@@ -13,5 +13,7 @@ const createWebuntuTheme = (themeMode: ThemeMode, accentColorName: AccentColor) 
       }
     }
   });
-};
+}
+
+export default createWebuntuTheme;
 

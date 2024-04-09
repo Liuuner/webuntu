@@ -105,6 +105,7 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
           <App key={appConfig.id}
                zIndex={appConfig.zIndex}
                app={appConfig.app}
+               minimumSize={appConfig.minimumSize}
                onSelectApp={() => handleSelectApp(i)}
                onCloseApp={() => handleCloseApp(i)}
                setIsFullscreenPreview={setIsFullscreenPreview}>

@@ -1,7 +1,7 @@
 import "./AppBar.css";
-import { AppModel } from "../../model/AppModel.ts";
-import { useAppSelector } from "../../store/hooks.ts";
 import IMAGES from "./Images.ts";
+import { AppModel } from "src/model/AppModel.ts";
+import { useAppSelector } from "src/hooks/storeHooks.ts";
 
 type AppBarProps = {
   apps: AppModel[];
@@ -10,7 +10,7 @@ type AppBarProps = {
 
 const AppBar = ({ apps, onOpenApp }: AppBarProps) => {
   const appBarWidth = useAppSelector(
-    (state) => state.personalisation.appBarWidth
+    (state) => state.settings.appBarWidth
   );
 
   return (

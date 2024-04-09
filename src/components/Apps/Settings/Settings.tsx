@@ -1,23 +1,31 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks.ts";
-import { setAppBarWidth, setInfoBarHeight } from "../../../store/personalisation/PersonalisationSlice.ts";
-import { AccentColor, accentColorMap } from "../../../theme/AccentColors.ts";
-import AccentColorButton from "./AccentColorButton.tsx";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { setAppBarWidth, setInfoBarHeight, setInfoBarTimeFormat } from "../../../features/personalisation/PersonalisationSlice.ts";
+import AccentColorSelection from "src/components/Apps/Settings/AccentColorSelection.tsx";
+import { Button, Stack } from "@mui/material";
+import { AccentColor } from "src/theme/AccentColors.ts";
+import { settingsSliceActions, SettingsState } from "src/store/personalisation/SettingsSlice.ts";
+import { useAppDispatch, useAppSelector } from "src/hooks/storeHooks.ts";
 
 
 function Settings() {
   const dispatch = useAppDispatch();
+  const personalisationState = useAppSelector((state) => state.settings);
 
-  const [originalValue, setOriginalValue] = useState(
-    useAppSelector((state) => state.personalisation)
-  );
+  const [originalSettings, setOriginalSettings] = useState<SettingsState>(personalisationState);
 
-  const [selectedAccentColor, setSelectedAccentColor] = useState<AccentColor>("default");
-
-  const handleSelectAccentColor = (accentColor: AccentColor) => {
-    setSelectedAccentColor(accentColor);
+  const handleChangeAppBarWidth = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(settingsSliceActions.setAppBarWidth(e.target.valueAsNumber));
+  };
+  const handleChangeInfoBarHeight = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(settingsSliceActions.setInfoBarHeight(e.target.valueAsNumber));
+  };
+  const handleChangeTimeFormat = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(settingsSliceActions.setTimeFormat(e.target.value));
+  };
+  const handleChangeAccentColor = (color: AccentColor) => {
+    dispatch(settingsSliceActions.setAccentColor(color));
+  };
+  const handleRevert = () => {
+    dispatch(settingsSliceActions.setPersonalisation(originalSettings));
   };
 
   return (
@@ -25,37 +33,30 @@ function Settings() {
       <p>AppBarWidth</p>
       <input
         type="number"
-        value={useAppSelector((state) => state.personalisation.appBarWidth)}
-        onChange={(e) => dispatch(setAppBarWidth(e.target.valueAsNumber))}
+        value={personalisationState.appBarWidth}
+        onChange={handleChangeAppBarWidth}
       />
       <p>InfoBarHeight</p>
       <input
         type="number"
-        value={useAppSelector((state) => state.personalisation.infoBarHeight)}
-        onChange={(e) => dispatch(setInfoBarHeight(e.target.valueAsNumber))}
+        value={personalisationState.infoBarHeight}
+        onChange={handleChangeInfoBarHeight}
       />
-      <p>InfoBarTimeFormat (use <a target={"_blank"} href="https://day.js.org/docs/en/display/format">this format</a>)</p>
+      <p>TimeFormat (use <a target={"_blank"} href="https://day.js.org/docs/en/display/format">this format</a>)
+      </p>
       <input
         type="text"
-        value={useAppSelector((state) => state.personalisation.infoBarTimeFormat)}
-        onChange={(e) => dispatch(setInfoBarTimeFormat(e.target.value))}
+        value={personalisationState.timeFormat}
+        onChange={handleChangeTimeFormat}
       />
-      <br />
-      <br />
-      <br />
-      <div>
-        {
-          Object.entries(accentColorMap).map(([key, value], index) => (
-            <AccentColorButton
-              accentColor={key}
-              color={value}
-              onClick={handleSelectAccentColor}
-              key={index}
-              selected={selectedAccentColor === key}
-            />
-          ))
-        }
-      </div>
+      <AccentColorSelection
+        accentColor={personalisationState.accentColor}
+        onChange={handleChangeAccentColor} />
+
+      <Stack direction={"row"} spacing={2}>
+        <Button variant={"contained"} onClick={() => setOriginalSettings(personalisationState)}>Apply</Button>
+        <Button variant={"contained"} onClick={handleRevert}>Revert</Button>
+      </Stack>
     </>
   );
 }
