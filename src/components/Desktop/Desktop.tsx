@@ -103,7 +103,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
         width: (desktopSelectPos.width + "px"),
         display: (desktopSelectPos.width + desktopSelectPos.height > 0 ? "block" : "none")
       }} />
-
       {
         openedAppConfigs.map((appConfig, i) => (
           <App key={appConfig.id}
@@ -115,7 +114,6 @@ function Desktop({ openedAppConfigs, setOpenedAppConfigs }: DesktopProps) {
           </App>
         ))
       }
-
     </main>
   );
 }

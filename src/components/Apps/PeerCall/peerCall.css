@@ -1,0 +1,41 @@
+#peer-call{
+    height: 100%;
+}
+
+#peer-call-menu{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+}
+
+#remote-video {
+    display: none;
+    position: absolute;
+    max-width: 100%;
+    height: calc(100% - 35px);
+    top: 35px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1;
+}
+
+#local-video {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    z-index: 2;
+    transform: scaleX(-1);
+}
+
+#end-call{
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 3;
+}
