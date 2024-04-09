@@ -145,7 +145,7 @@ export function removeEntry(path: string, filesystem: FileSystem): Promise<void>
   }, filesystem);
 }
 
-export function removeDirectoryRecursively(path: string, filesystem: FileSystem) {
+export function removeDirectoryRecursively(path: string, filesystem: FileSystem): Promise<void> {
   return getDirectoryEntry(path, filesystem)
     .then(dir => {
       return new Promise<void>((resolve, reject) => {
