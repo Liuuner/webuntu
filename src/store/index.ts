@@ -1,7 +1,9 @@
 import { combineReducers, configureStore, PreloadedState } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from "redux-persist";
 import { settingsInitialState, settingsSliceReducer } from "src/store/personalisation/SettingsSlice.ts";
 import storage from "redux-persist/lib/storage";
+import storageSession from "redux-persist/lib/storage/session";
+import { appsInitialState, appsSliceReducer } from "src/store/apps/AppsSlice.ts";
 
 const persistConfigSettings = {
   key: "settings",
@@ -9,20 +11,35 @@ const persistConfigSettings = {
   storage: storage
 };
 
-const persistedPersonalisationReducer = persistReducer(persistConfigSettings, settingsSliceReducer);
+const persistConfigApps = {
+  key: "apps",
+  version: 1,
+  storage: storageSession
+};
+
+const persistedSettingsReducer = persistReducer(persistConfigSettings, settingsSliceReducer);
+const persistedAppsReducer = persistReducer(persistConfigApps, appsSliceReducer);
 
 const rootReducer = combineReducers({
-  settings: persistedPersonalisationReducer
+  settings: persistedSettingsReducer,
+  apps: persistedAppsReducer
 });
 
 export const preloadedState = {
-  settings: settingsInitialState
+  settings: settingsInitialState,
+  apps: appsInitialState
 };
 
 export const setupStore = (preloadedState: PreloadedState<RootState>) =>
   configureStore({
     reducer: rootReducer,
-    preloadedState
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        }
+      })
   });
 
 const store = setupStore(preloadedState);

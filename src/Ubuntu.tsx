@@ -1,49 +1,50 @@
-import { useState } from "react";
-import { AppModel } from "./model/AppModel.ts";
+import { memo } from "react";
 import InfoBar from "./components/InfoBar/InfoBar.tsx";
 import AppBar from "./components/AppBar/AppBar.tsx";
 import Desktop from "./components/Desktop/Desktop.tsx";
-import IMAGES from "./components/AppBar/Images.ts";
-import { AppConfigType } from "./components/Desktop/AppConfigType.ts";
-import { DefaultApp, Settings } from "./components/Apps/Apps.ts";
-import MfTest from "src/components/Apps/MicrofrontendTest/MfTest.tsx";
+import { styled } from "@mui/material";
+import { useAppSelector } from "src/hooks/storeHooks.ts";
 
 function Ubuntu() {
-  const [apps, setApps] = useState<AppModel[]>([
-    { name: "Firefox", icon: IMAGES.firefox, app: DefaultApp },
-    { name: "LibreOffice", icon: IMAGES.libreOffice, app: DefaultApp },
-    { name: "Rhythmbox", icon: IMAGES.rhythmBox, app: DefaultApp },
-    { name: "Settings", icon: IMAGES.settings, minimumSize: { width: 500, height: 250 }, app: Settings },
-    { name: "Help", icon: IMAGES.help, app: DefaultApp },
-    { name: "MfTest", icon: IMAGES.components, app: MfTest }
-  ]);
+  // const [apps, setApps] = useState<AppModel[]>();
 
-  const [openedAppConfigs, setOpenedAppConfigs] = useState<AppConfigType[]>([]);
+  // const [openedAppConfigs, setOpenedAppConfigs] = useState<OpenedAppModel[]>([]);
 
-  const handleOpenApp = (app: AppModel) => {
-    let newId = 0;
+  /*const handleOpenApp = useCallback((app: App) => {
+    const newId = nanoid();
     let newZIndex = 1;
 
-    if (openedAppConfigs.length < 0) {
-      newId = Math.max(...openedAppConfigs.map(config => config.id)) + 1;
+    if (openedAppConfigs.length > 0) {
       newZIndex = Math.max(...openedAppConfigs.map(config => config.zIndex)) + 1;
     }
 
     setOpenedAppConfigs(oldVal => {
       return [...oldVal, { id: newId, zIndex: newZIndex, app: app, minimumSize: app.minimumSize }];
     });
-  };
-
-  // TODO: Fullscreen
-  // TODO: Theming => https://css-tricks.com/theming-and-theme-switching-with-react-and-styled-components/
+  }, [openedAppConfigs]);*/
 
   return (
-    <>
-      <InfoBar />
-      <AppBar apps={apps} onOpenApp={handleOpenApp} />
-      <Desktop openedAppConfigs={openedAppConfigs} setOpenedAppConfigs={setOpenedAppConfigs} />
-    </>
+    <UbuntuWrapper id={"ubuntu"}>
+      <MemoInfoBar />
+      <MemoAppBar />{/*apps={apps} onOpenApp={handleOpenApp}*/}
+      <Desktop />{/*openedAppConfigs={openedAppConfigs} setOpenedAppConfigs={setOpenedAppConfigs}*/}
+    </UbuntuWrapper>
   );
 }
+
+const UbuntuWrapper = styled("div")(() => {
+  const { infoBarHeight, appBarWidth } = useAppSelector((state) => state.settings);
+
+  return {
+    display: "grid",
+    height: "100%",
+    width: "100%",
+    gridTemplate:
+      `"infoBar infoBar" ${infoBarHeight}px
+      "appBar desktop" auto / ${appBarWidth}px 1fr`
+  };
+});
+const MemoInfoBar = memo(InfoBar);
+const MemoAppBar = memo(AppBar);
 
 export default Ubuntu;

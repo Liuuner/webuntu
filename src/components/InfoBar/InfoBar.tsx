@@ -4,9 +4,6 @@ import dayjs from "dayjs";
 import { useAppSelector } from "src/hooks/storeHooks.ts";
 
 function InfoBar() {
-  const infoBarHeight = useAppSelector(
-    (state) => state.settings.infoBarHeight
-  );
   const timeFormat = useAppSelector(
     (state) => state.settings.timeFormat
   );
@@ -22,7 +19,7 @@ function InfoBar() {
   }, [timeFormat]);
 
   return (
-    <header id={"infoBar"} style={{ height: infoBarHeight }}>
+    <header id={"infoBar"}>
       <div id={"time"}>
         <p>{time}</p>
       </div>

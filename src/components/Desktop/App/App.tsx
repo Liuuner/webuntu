@@ -4,14 +4,9 @@ import { WindowRoundedIcon } from "./WindowRoundedIcon.tsx";
 import { IconClose } from "../../../icons";
 import MinimiseBar from "../../../icons/icons/MinimiseBar.tsx";
 import MaximiseBar from "../../../icons/icons/MaximiseBar.tsx";
-import { AppModel } from "../../../model/AppModel.ts";
-
-type Area = {
-  top: number;
-  left: number;
-  height: number;
-  width: number;
-};
+import { Area, OpenedApp } from "src/model/AppModel.ts";
+import { useAppDispatch, useAppSelector } from "src/hooks/storeHooks.ts";
+import { APPS, appsSliceActions } from "src/store/apps/AppsSlice.ts";
 
 enum Direction {
   TOP_LEFT,
@@ -25,72 +20,78 @@ enum Direction {
 }
 
 type AppProps = {
-  minimumSize?: { height: number; width: number };
+  /*minimumSize?: { height: number; width: number };
   initialSize?: { height: number; width: number };
-  setIsFullscreenPreview: (value: boolean) => void;
   zIndex: number;
   onSelectApp: () => void;
   onCloseApp: () => void;
-  app: AppModel;
+  app: App;*/
+  setIsFullscreenPreview: (value: boolean) => void;
+  appObject: OpenedApp
 };
 
 // TODO in index
 const APP_MENUBAR_HEIGHT = 35;
-const APP_BAR_WIDTH = 70;
-const INFO_BAR_HEIGHT = 23;
 
 const App: React.FC<PropsWithChildren<AppProps>> = ({
-                                                      minimumSize = { height: 250, width: 400 },
+                                                      /*minimumSize = { height: 250, width: 400 },
                                                       initialSize = { height: 300, width: 550 },
-                                                      setIsFullscreenPreview,
                                                       zIndex,
                                                       onSelectApp,
-                                                      onCloseApp,
-                                                      app
+                                                      onCloseApp,*/
+                                                      setIsFullscreenPreview,
+                                                      appObject
                                                     }) => {
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  // const [isFullScreen, setIsFullScreen] = useState(false);
+  const dispatch = useAppDispatch();
   const isPrepareFullscreenRef = useRef<boolean>(false);
+  const { infoBarHeight, appBarWidth } = useAppSelector((state) => state.settings);
+  const { app, area, zIndex, isFullscreen, id } = appObject;
 
-  const [area, setArea] = useState<Area>({
-    top: window.innerHeight / 2 - initialSize.height / 2,
-    left: window.innerWidth / 2 - initialSize.width / 2,
-    height: initialSize.height,
-    width: initialSize.width
-  });
+  const minimumSize = { height: 250, width: 400 };
+  // const initialSize = { height: 300, width: 550 };
+
+  const [tempArea, setTempArea] = useState<Area>(area);
+
+  const setIsFullscreen = (b: boolean) => {
+    dispatch(appsSliceActions.setAppIsFullscreen({ id, isFullscreen: b }));
+
+  };
 
   const handleClickApp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    onSelectApp();
+    dispatch(appsSliceActions.selectApp(id));
+    // onSelectApp();
   };
 
 
   const calcRelativeCoords = (coordinate: number, direction: "X" | "Y") => {
     if (direction === "X") {
-      return coordinate - APP_BAR_WIDTH;
+      return coordinate - appBarWidth;
     } else {
-      return coordinate - INFO_BAR_HEIGHT;
+      return coordinate - infoBarHeight;
     }
   };
 
   const calcAbsoluteCoords = (coordinate: number, direction: "X" | "Y") => {
     if (direction === "X") {
-      return coordinate + APP_BAR_WIDTH;
+      return coordinate + appBarWidth;
     } else {
-      return coordinate + INFO_BAR_HEIGHT;
+      return coordinate + infoBarHeight;
     }
   };
 
   function draggable(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation();
-    e.preventDefault(); //not working
+    e.preventDefault();
 
     const originalClientY = e.clientY;
 
     const target = e.currentTarget;
-    const offsetLeft = isFullScreen ? (e.clientX - APP_BAR_WIDTH) / (window.innerWidth - APP_BAR_WIDTH) * area.width + APP_BAR_WIDTH :
-      e.clientX - target.getBoundingClientRect().left + APP_BAR_WIDTH;
+    const offsetLeft = isFullscreen ? (e.clientX - appBarWidth) / (window.innerWidth - appBarWidth) * area.width + appBarWidth :
+      e.clientX - target.getBoundingClientRect().left + appBarWidth;
     const offsetTop =
-      e.clientY - target.getBoundingClientRect().top + INFO_BAR_HEIGHT;
+      e.clientY - target.getBoundingClientRect().top + infoBarHeight;
 
     document.onmousemove = drag;
     document.onmouseup = clear;
@@ -99,9 +100,9 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
       e.stopPropagation();
       e.preventDefault();
 
-      if (isFullScreen && Math.abs(originalClientY - e.clientY) > 10) {
+      if (isFullscreen && Math.abs(originalClientY - e.clientY) > 10) {
         // 10 is the tolerance until the app exits fullscreen (how much the mouse has to move)
-        setIsFullScreen(false);
+        setIsFullscreen(false);
       }
 
       const newX = e.clientX - offsetLeft;
@@ -110,8 +111,8 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
       isPrepareFullscreenRef.current = newY < 0;
       setIsFullscreenPreview(newY < 0);
 
-      setArea({
-        ...area,
+      setTempArea((prevArea) => ({
+        ...prevArea,
         top: calcAbsoluteCoords(
           Math.min(
             calcRelativeCoords(window.innerHeight, "Y") - APP_MENUBAR_HEIGHT,
@@ -119,18 +120,19 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
           ), "Y"),
         left: calcAbsoluteCoords(
           Math.min(
-            calcRelativeCoords(window.innerWidth, "X") - area.width,
+            calcRelativeCoords(window.innerWidth, "X") - prevArea.width,
             Math.max(0, newX)
           ), "X")
-      });
+      }));
     }
 
     function clear() {
       if (isPrepareFullscreenRef.current) {
-        setIsFullScreen(true);
+        setIsFullscreen(true);
         isPrepareFullscreenRef.current = false;
         setIsFullscreenPreview(false);
       }
+      dispatch(appsSliceActions.setAppArea({ id, area: tempArea }));
       document.onmousemove = null;
       document.onmouseup = null;
     }
@@ -143,102 +145,105 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     e.stopPropagation();
     e.preventDefault();
 
-    const originalX = e.clientX - APP_BAR_WIDTH;
-    const originalY = e.clientY - INFO_BAR_HEIGHT;
+    const originalX = e.clientX - appBarWidth;
+    const originalY = e.clientY - infoBarHeight;
 
     document.onmousemove = resize;
     document.onmouseup = clear;
 
     function resize(e: MouseEvent) {
+      e.stopPropagation();
+      e.preventDefault();
+
       const newX = Math.min(
-        window.innerWidth - APP_BAR_WIDTH,
-        Math.max(e.clientX - APP_BAR_WIDTH, 0)
+        window.innerWidth - appBarWidth,
+        Math.max(e.clientX - appBarWidth, 0)
       );
       const newY = Math.min(
-        window.innerHeight - INFO_BAR_HEIGHT,
-        Math.max(e.clientY - INFO_BAR_HEIGHT, 0)
+        window.innerHeight - infoBarHeight,
+        Math.max(e.clientY - infoBarHeight, 0)
       );
 
       const calcResizeBottom = (
-        area: Area,
+        propArea: Area,
         newY: number,
         originalY: number
       ) => ({
-        height: Math.max(minimumSize?.height, area.height + newY - originalY)
+        height: Math.max(minimumSize?.height, propArea.height + newY - originalY)
       });
       const calcResizeRight = (
-        area: Area,
+        propArea: Area,
         newX: number,
         originalX: number
       ) => ({
-        width: Math.max(minimumSize?.width, area.width + newX - originalX)
+        width: Math.max(minimumSize?.width, propArea.width + newX - originalX)
       });
-      const calcResizeTop = (area: Area, newY: number, originalY: number) => ({
-        top: newY + INFO_BAR_HEIGHT,
-        height: Math.max(minimumSize?.height, area.height + originalY - newY)
+      const calcResizeTop = (propArea: Area, newY: number, originalY: number) => ({
+        top: newY + infoBarHeight,
+        height: Math.max(minimumSize?.height, propArea.height + originalY - newY)
       });
-      const calcResizeLeft = (area: Area, newX: number, originalX: number) => ({
-        left: newX + APP_BAR_WIDTH,
-        width: Math.max(minimumSize?.width, area.width + originalX - newX)
+      const calcResizeLeft = (propArea: Area, newX: number, originalX: number) => ({
+        left: newX + appBarWidth,
+        width: Math.max(minimumSize?.width, propArea.width + originalX - newX)
       });
 
       switch (direction) {
         case Direction.TOP_LEFT:
-          setArea(() => ({
-            ...calcResizeTop(area, newY, originalY),
-            ...calcResizeLeft(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...calcResizeTop(prevArea, newY, originalY),
+            ...calcResizeLeft(prevArea, newX, originalX)
           }));
           break;
 
         case Direction.TOP:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeTop(area, newY, originalY)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeTop(prevArea, newY, originalY)
           }));
           break;
 
         case Direction.TOP_RIGHT:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeTop(area, newY, originalY),
-            ...calcResizeRight(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeTop(prevArea, newY, originalY),
+            ...calcResizeRight(prevArea, newX, originalX)
           }));
           break;
 
         case Direction.RIGHT:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeRight(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeRight(prevArea, newX, originalX)
           }));
           break;
 
         case Direction.BOTTOM_RIGHT:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeBottom(area, newY, originalY),
-            ...calcResizeRight(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeBottom(prevArea, newY, originalY),
+            ...calcResizeRight(prevArea, newX, originalX)
           }));
           break;
 
         case Direction.BOTTOM:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeBottom(area, newY, originalY)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeBottom(prevArea, newY, originalY)
           }));
           break;
 
         case Direction.BOTTOM_LEFT:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeBottom(area, newY, originalY),
-            ...calcResizeLeft(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeBottom(prevArea, newY, originalY),
+            ...calcResizeLeft(prevArea, newX, originalX)
           }));
           break;
 
         case Direction.LEFT:
-          setArea((prev) => ({
-            ...prev,
-            ...calcResizeLeft(area, newX, originalX)
+          setTempArea((prevArea) => ({
+            ...prevArea,
+            ...calcResizeLeft(prevArea, newX, originalX)
           }));
           break;
       }
@@ -247,6 +252,7 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     function clear() {
       document.onmousemove = null;
       document.onmouseup = null;
+      // dispatch(appsSliceActions.setAppArea({ id, area: tempArea }));
     }
   }
 
@@ -258,56 +264,46 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
   });
 
   return (
-    <>
-      <style>
-        {
-          /*`
-@keyframes exit_fullscreen {
-  0% {height: 100%; width: 100%; top: 0; left: 0;}
-  100% {height: ${area.height}px; width: ${area.width}px; top: ${area.top}px; left: ${area.left}px;}
-}
-          `*/
-        }
-      </style>
+    <div
+      className={isFullscreen ? "fullscreenApp" : "app"}
+      style={{ ...(isFullscreen ? {} : areaMapper(tempArea)), zIndex: zIndex }}
+      onMouseDown={(e) => handleClickApp(e)}
+    >
       <div
-        className={isFullScreen ? "fullscreenApp" : "app"}
-        style={{ ...(isFullScreen ? {} : areaMapper(area)), zIndex: zIndex }}
-        onMouseDown={(e) => handleClickApp(e)}
+        className={"appMenuBar"}
+        onMouseDown={(e) => {
+          handleClickApp(e);
+          draggable(e);
+        }}
+        onDoubleClick={() => setIsFullscreen(!isFullscreen)}
       >
-        <div
-          className={"appMenuBar"}
-          onMouseDown={(e) => {
-            handleClickApp(e);
-            draggable(e);
-          }}
-          onDoubleClick={() => setIsFullScreen((b) => !b)}
-        >
-          <div className="applicationTitle">
-            {app.name}
-          </div>
-          <div className="appBarIcons">
-            <WindowRoundedIcon onClose={(e) => e.stopPropagation()}>
-              <MinimiseBar />
-            </WindowRoundedIcon>
-            <WindowRoundedIcon onClose={() => setIsFullScreen(!isFullScreen)}>
-              <MaximiseBar />
-            </WindowRoundedIcon>
-            <WindowRoundedIcon onClose={onCloseApp}>
-              <IconClose color={"#FFF"} />
-            </WindowRoundedIcon>
-          </div>
+        <div className="applicationTitle">
+          {app.name}
         </div>
-        <div className={"appContent"}>{app.app()}</div>
-        {!isFullScreen && <Resizers resizable={resizable} />}
+        <div className="appBarIcons">
+          <WindowRoundedIcon onClose={(e) => e.stopPropagation()}>
+            <MinimiseBar />
+          </WindowRoundedIcon>
+          <WindowRoundedIcon onClose={(e) => e.stopPropagation()}>
+            <MaximiseBar />
+          </WindowRoundedIcon>
+          <WindowRoundedIcon onClose={() => dispatch(appsSliceActions.closeApp(id))}>
+            <IconClose color={"#FFF"} />
+          </WindowRoundedIcon>
+        </div>
       </div>
-    </>
+      <div className={"appContent"}>{
+        APPS[app.appKey]()
+      }</div>
+      {!isFullscreen && <Resizers resizable={resizable} />}
+    </div>
   );
 };
 
 type ResizersProps = {
   resizable: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    direction: Direction
+    _e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    _direction: Direction
   ) => void;
 };
 
