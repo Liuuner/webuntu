@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { PropsWithChildren, useRef, useState } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { WindowRoundedIcon } from "./WindowRoundedIcon.tsx";
 import { IconClose } from "../../../icons";
 import MinimiseBar from "../../../icons/icons/MinimiseBar.tsx";
@@ -48,9 +48,14 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
   const { infoBarHeight, appBarWidth } = useAppSelector((state) => state.settings);
   const { app, area, zIndex, isFullscreen, id } = appObject;
 
+  useEffect(() => {
+    console.log(area);
+  }, [area]);
+
   const minimumSize = { height: 250, width: 400 };
   // const initialSize = { height: 300, width: 550 };
 
+  // TODO: ggf. useRef() nehmen
   const [tempArea, setTempArea] = useState<Area>(area);
 
   const setIsFullscreen = (b: boolean) => {
@@ -132,9 +137,12 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
         isPrepareFullscreenRef.current = false;
         setIsFullscreenPreview(false);
       }
-      dispatch(appsSliceActions.setAppArea({ id, area: tempArea }));
       document.onmousemove = null;
       document.onmouseup = null;
+      setTempArea(prevState => {
+        dispatch(appsSliceActions.setAppArea({ id, area: prevState }));
+        return prevState;
+      });
     }
   }
 
@@ -147,6 +155,9 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
 
     const originalX = e.clientX - appBarWidth;
     const originalY = e.clientY - infoBarHeight;
+    const originalArea = { ...tempArea };
+    const originalBottomAnchorY = e.clientY + originalArea.height; // evtl. auch originalArea.top anstatt e.cli... nehmen
+    const originalRightAnchorX = e.clientX + originalArea.width; // evtl. auch originalArea.left anstatt e.cli... nehmen
 
     document.onmousemove = resize;
     document.onmouseup = clear;
@@ -165,86 +176,93 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
       );
 
       const calcResizeBottom = (
-        propArea: Area,
         newY: number,
         originalY: number
       ) => ({
-        height: Math.max(minimumSize?.height, propArea.height + newY - originalY)
+        height: Math.max(minimumSize?.height, originalArea.height + newY - originalY)
       });
       const calcResizeRight = (
-        propArea: Area,
         newX: number,
         originalX: number
       ) => ({
-        width: Math.max(minimumSize?.width, propArea.width + newX - originalX)
+        width: Math.max(minimumSize?.width, originalArea.width + newX - originalX)
       });
-      const calcResizeTop = (propArea: Area, newY: number, originalY: number) => ({
-        top: newY + infoBarHeight,
-        height: Math.max(minimumSize?.height, propArea.height + originalY - newY)
-      });
-      const calcResizeLeft = (propArea: Area, newX: number, originalX: number) => ({
-        left: newX + appBarWidth,
-        width: Math.max(minimumSize?.width, propArea.width + originalX - newX)
-      });
+      const calcResizeTop = (newY: number) => {
+        const newTop = Math.min(originalBottomAnchorY - minimumSize.height,
+          newY + infoBarHeight);
+        return {
+          top: newTop,
+          height: originalBottomAnchorY - newTop
+        };
+      };
+      const calcResizeLeft = (newX: number) => {
+        const newLeft = Math.min(originalRightAnchorX - minimumSize.width,
+          newX + appBarWidth);
+        return {
+          left: newLeft,
+          width: originalRightAnchorX - newLeft
+        };
+      };
 
       switch (direction) {
         case Direction.TOP_LEFT:
-          setTempArea((prevArea) => ({
-            ...calcResizeTop(prevArea, newY, originalY),
-            ...calcResizeLeft(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeTop(newY),
+            ...calcResizeLeft(newX)
+          });
           break;
 
         case Direction.TOP:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeTop(prevArea, newY, originalY)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeTop(newY)
+          });
           break;
 
         case Direction.TOP_RIGHT:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeTop(prevArea, newY, originalY),
-            ...calcResizeRight(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeTop(newY),
+            ...calcResizeRight(newX, originalX)
+          });
           break;
 
         case Direction.RIGHT:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeRight(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeRight(newX, originalX)
+          });
           break;
 
         case Direction.BOTTOM_RIGHT:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeBottom(prevArea, newY, originalY),
-            ...calcResizeRight(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeBottom(newY, originalY),
+            ...calcResizeRight(newX, originalX)
+          });
           break;
 
         case Direction.BOTTOM:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeBottom(prevArea, newY, originalY)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeBottom(newY, originalY)
+          });
           break;
 
         case Direction.BOTTOM_LEFT:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeBottom(prevArea, newY, originalY),
-            ...calcResizeLeft(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeBottom(newY, originalY),
+            ...calcResizeLeft(newX)
+          });
           break;
 
         case Direction.LEFT:
-          setTempArea((prevArea) => ({
-            ...prevArea,
-            ...calcResizeLeft(prevArea, newX, originalX)
-          }));
+          setTempArea({
+            ...originalArea,
+            ...calcResizeLeft(newX)
+          });
           break;
       }
     }
@@ -252,7 +270,12 @@ const App: React.FC<PropsWithChildren<AppProps>> = ({
     function clear() {
       document.onmousemove = null;
       document.onmouseup = null;
-      // dispatch(appsSliceActions.setAppArea({ id, area: tempArea }));
+      // TODO BUG
+      // Problem gefunden: tempArea hat sich ausserhalb der resize func. noch nicht geupdated
+      setTempArea(prevState => {
+        dispatch(appsSliceActions.setAppArea({ id, area: prevState }));
+        return prevState;
+      });
     }
   }
 

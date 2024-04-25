@@ -79,6 +79,8 @@ const appsSlice = createSlice({
       state.openedApps[index].zIndex = newZIndex;
     },
     setAppArea: (state, action: PayloadAction<{ id: string, area: Area }>) => {
+      console.log("setAppArea", action.payload);
+
       const { id, area } = action.payload;
       const index = state.openedApps.findIndex((app) => app.id === id);
       state.openedApps[index].area = area;
