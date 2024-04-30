@@ -95,7 +95,6 @@ function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
           </MemoApp>
         ))
       }
-
     </main>
   );
 }

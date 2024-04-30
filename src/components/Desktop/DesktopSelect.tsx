@@ -13,6 +13,7 @@ function DesktopSelect({ desktopRef }: { desktopRef: RefObject<HTMLDivElement> }
   });
 
   const startDesktopSelect = (e: MouseEvent) => {
+    console.log("desktopSelect-start");
     e.stopPropagation();
     e.preventDefault();
     const startDesktopSelectPos = [e.clientY, e.clientX];

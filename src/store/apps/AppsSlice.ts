@@ -1,15 +1,6 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { AppModel, Area, OpenedApp } from "src/model/AppModel.ts";
 import IMAGES from "src/components/AppBar/Images.ts";
-import { DefaultApp, Settings } from "src/components/Apps/Apps.ts";
-import MfTest from "src/components/Apps/MicrofrontendTest/MfTest.tsx";
-import { JSX } from "react";
-
-export const APPS: { [key: string]: () => JSX.Element } = {
-  defaultApp: DefaultApp,
-  settings: Settings,
-  mfTest: MfTest
-};
 
 export interface AppsState {
   installedApps: AppModel[],
@@ -76,10 +67,11 @@ const appsSlice = createSlice({
     selectApp: (state, action: PayloadAction<string>) => {
       const newZIndex = Math.max(...state.openedApps.map(config => config.zIndex)) + 1;
       const index = state.openedApps.findIndex((app) => app.id === action.payload);
+      if (state.openedApps[index].zIndex == newZIndex - 1) return;
       state.openedApps[index].zIndex = newZIndex;
     },
     setAppArea: (state, action: PayloadAction<{ id: string, area: Area }>) => {
-      console.log("setAppArea", action.payload);
+      // console.log("setAppArea", action.payload);
 
       const { id, area } = action.payload;
       const index = state.openedApps.findIndex((app) => app.id === id);

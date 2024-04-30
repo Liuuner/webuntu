@@ -1,15 +1,17 @@
+import { AppKey } from "src/components/Apps/Apps.ts";
+
 export type AppModel = {
-  readonly name: string;
-  readonly icon: string;
-  readonly minimumSize?: { height: number; width: number };
-  readonly initialSize?: { height: number, width: number };
-  readonly url?: string;
-  readonly appKey: string;
+  name: string;
+  icon: string;
+  minimumSize?: { height: number; width: number };
+  initialSize?: { height: number, width: number };
+  url?: string;
+  appKey: AppKey;
 };
 
 export type OpenedApp = {
   readonly id: string;
-  readonly app: AppModel;
+  readonly app: Readonly<AppModel>;
   zIndex: number;
   area: Area;
   isFullscreen: boolean;
