@@ -10,30 +10,54 @@
     background-color: #222222;
 }
 
+html {
+    --infoBarHeight: 23px;
+    --appBarWidth: 70px;
+}
+
 .app {
     border-radius: 10px;
     position: absolute;
     outline: #130610 1px solid;
     overflow: hidden;
-    
+    /*
     animation-name: exit_fullscreen;
     animation-timing-function: ease-in;
     animation-iteration-count: 1;
-    animation-duration: 150ms;
+    animation-duration: 150ms;*/
+    
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    height: var(--height);
 }
 
 .fullscreenApp {
     position: relative;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
+    
+    
     outline: #130610 1px solid;
     
-    transition: top, left, width, height, ease-in 150ms;
+    animation: enterFullscreen 150ms ease-in forwards;
     
     .appMenuBar {
         border-radius: 0;
+    }
+}
+
+@keyframes enterFullscreen {
+    from {
+        top: calc(var(--top) - var(--infoBarHeight));
+        left: calc(var(--left) - var(--appBarWidth));
+        width: var(--width);
+        height: var(--height);
+    }
+    
+    to {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
     }
 }
 
@@ -54,7 +78,8 @@
 }
 
 .appContent {
-    height: calc(100% - 35px);
+    height: 100%;
+    /*height: calc(100% - 35px);*/
     width: 100%;
 }
 
@@ -73,12 +98,14 @@
 .resizer {
     position: absolute;
     pointer-events: auto;
+    background: rgba(255, 255, 255, 0.49);
 }
 
 .resizer.round {
     width: 15px;
-    height: 15px; /*magic to turn square into circle*/
-    /*background: white;*/
+    height: 15px;
+    /*width: 30px;
+    height: 30px;*/
     border-radius: 100%;
 }
 
