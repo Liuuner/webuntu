@@ -83,23 +83,17 @@ function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
 
       {
         openedApps.map((appConfig) => (
-          <MemoApp
+          <App
             key={appConfig.id}
             appObject={appConfig}
             setIsFullscreenPreview={setIsFullscreenPreview}
-            /*zIndex={appConfig.zIndex}
-            app={appConfig.app}
-            minimumSize={appConfig.minimumSize}
-            onSelectApp={() => handleSelectApp(i)}
-            onCloseApp={() => handleCloseApp(i)}*/>
-          </MemoApp>
+          />
         ))
       }
     </main>
   );
 }
 
-const MemoApp = memo(App);
 const MemoDesktopSelect = memo(DesktopSelect);
 
 export default Desktop;
