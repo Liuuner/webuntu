@@ -1,23 +1,27 @@
 import "./AppBar.css";
-import { AppModel } from "../../model/AppModel.ts";
-import { useAppSelector } from "../../app/hooks.ts";
 import IMAGES from "./Images.ts";
+import { AppModel } from "src/model/AppModel.ts";
+import { useAppDispatch, useAppSelector } from "src/hooks/storeHooks.ts";
+import { appsSliceActions } from "src/store/apps/AppsSlice.ts";
 
 type AppBarProps = {
-  apps: AppModel[];
-  onOpenApp: (app: AppModel) => void;
+  /*apps: App[];
+  onOpenApp: (app: App) => void;*/
 };
 
-const AppBar = ({ apps, onOpenApp }: AppBarProps) => {
-  const appBarWidth = useAppSelector(
-    (state) => state.personalisation.appBarWidth
-  );
+const AppBar = (/*{ apps, onOpenApp }: AppBarProps*/) => {
+  const dispatch = useAppDispatch();
+  const taskbarApps = useAppSelector((state) => state.apps.taskbarApps);
+
+  const handleOpenApp = (app: AppModel) => {
+    dispatch(appsSliceActions.openApp(app));
+  };
 
   return (
     <aside id={"appBar"}>
       <div id={"apps"}>
-        {apps.map((app, index) => (
-          <div onClick={() => onOpenApp(app)} key={index} className={"appIcon"}>
+        {taskbarApps.map((app, index) => (
+          <div onClick={() => handleOpenApp(app)} key={index} className={"appIcon"}>
             <img src={app.icon} alt={app.name} />
           </div>
         ))}
