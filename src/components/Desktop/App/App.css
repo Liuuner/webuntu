@@ -10,11 +10,6 @@
     background-color: #222222;
 }
 
-html {
-    --infoBarHeight: 23px;
-    --appBarWidth: 70px;
-}
-
 .app {
     border-radius: 10px;
     position: absolute;
@@ -44,8 +39,8 @@ html {
 
 @keyframes enterFullscreen {
     from {
-        top: calc(var(--top) - var(--infoBarHeight));
-        left: calc(var(--left) - var(--appBarWidth));
+        top: calc(var(--top) - var(--info-bar-height));
+        left: calc(var(--left) - var(--app-bar-width));
         width: var(--width);
         height: var(--height);
     }
@@ -67,8 +62,8 @@ html {
     }
     
     from {
-        top: calc(var(--top) - var(--infoBarHeight));
-        left: calc(var(--left) - var(--appBarWidth));
+        top: calc(var(--top) - var(--info-bar-height));
+        left: calc(var(--left) - var(--app-bar-width));
         height: 100%;
         width: 100%;
     }

@@ -8,6 +8,7 @@ import MaximiseBar from "src/icons/icons/MaximiseBar.tsx";
 import { WindowRoundedIcon } from "src/components/Desktop/App/WindowRoundedIcon.tsx";
 import { IconClose } from "src/icons";
 import MinimiseBar from "src/icons/icons/MinimiseBar.tsx";
+import { FullscreenPreview } from "src/components/Desktop/Desktop.tsx";
 
 enum Direction {
   TOP_LEFT,
@@ -21,14 +22,14 @@ enum Direction {
 }
 
 type AppProps = {
-  setIsFullscreenPreview: (value: boolean) => void;
+  fullscreenPreview: FullscreenPreview;
   appObject: OpenedApp
 };
 
 // TODO in index
 const APP_MENUBAR_HEIGHT = 35;
 
-export const UnmemorizedApp = ({ setIsFullscreenPreview, appObject }: AppProps) => {
+export const UnmemorizedApp = ({ fullscreenPreview, appObject }: AppProps) => {
   const dispatch = useAppDispatch();
   const isPrepareFullscreenRef = useRef<boolean>(false);
   const { infoBarHeight, appBarWidth } = useAppSelector((state) => state.settings);
@@ -89,7 +90,7 @@ export const UnmemorizedApp = ({ setIsFullscreenPreview, appObject }: AppProps) 
     e.stopPropagation();
     e.preventDefault();
 
-    console.clear();
+    const { setArea, setIsActive, clearFullscreenPreview } = fullscreenPreview;
 
     const originalClientY = e.clientY;
     const originalArea = { ...area };
@@ -102,12 +103,20 @@ export const UnmemorizedApp = ({ setIsFullscreenPreview, appObject }: AppProps) 
     const offsetTop =
       e.clientY - target.getBoundingClientRect().top + infoBarHeight;
 
-    document.onmousemove = (e) => setCssArea(drag(e));
+    setArea(originalArea);
+
+    document.onmousemove = (e) => {
+      const result = drag(e);
+
+      setCssArea(result);
+      setArea(result);
+    };
     document.onmouseup = (e) => {
       clear(e);
     };
 
     let localIsFullscreen = isFullscreen;
+    let localIsFullscreenBefore = false;
 
     function drag(e: MouseEvent, postMouseUp?: boolean): Partial<Area> {
       e.stopPropagation();
@@ -122,8 +131,12 @@ export const UnmemorizedApp = ({ setIsFullscreenPreview, appObject }: AppProps) 
       const newX = e.clientX - offsetLeft;
       const newY = e.clientY - offsetTop;
 
-      isPrepareFullscreenRef.current = newY < 0;
-      setIsFullscreenPreview(newY < 0);
+      const tempIsFullscreenPreview = newY < 0;
+      isPrepareFullscreenRef.current = tempIsFullscreenPreview;
+      if (localIsFullscreenBefore !== tempIsFullscreenPreview) {
+        setIsActive(tempIsFullscreenPreview);
+        localIsFullscreenBefore = tempIsFullscreenPreview;
+      }
 
       return {
         top: calcAbsoluteCoords(
@@ -149,10 +162,10 @@ export const UnmemorizedApp = ({ setIsFullscreenPreview, appObject }: AppProps) 
       dispatch(appsSliceActions.setAppArea({ id, area: newArea }));
       tempArea.current = newArea;
 
+      clearFullscreenPreview();
       if (isPrepareFullscreenRef.current) {
         setIsFullscreen(true);
         isPrepareFullscreenRef.current = false;
-        setIsFullscreenPreview(false);
       }
     }
   }

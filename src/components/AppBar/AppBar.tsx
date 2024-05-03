@@ -4,12 +4,7 @@ import { AppModel } from "src/model/AppModel.ts";
 import { useAppDispatch, useAppSelector } from "src/hooks/storeHooks.ts";
 import { appsSliceActions } from "src/store/apps/AppsSlice.ts";
 
-type AppBarProps = {
-  /*apps: App[];
-  onOpenApp: (app: App) => void;*/
-};
-
-const AppBar = (/*{ apps, onOpenApp }: AppBarProps*/) => {
+const AppBar = () => {
   const dispatch = useAppDispatch();
   const taskbarApps = useAppSelector((state) => state.apps.taskbarApps);
 

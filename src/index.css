@@ -5,6 +5,11 @@
     --app-icon-img-width: 60%;
 }
 
+html {
+    --info-bar-height: 23px;
+    --app-bar-width: 70px;
+}
+
 html,
 body,
 #root {

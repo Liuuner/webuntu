@@ -6,28 +6,12 @@ import { styled } from "@mui/material";
 import { useAppSelector } from "src/hooks/storeHooks.ts";
 
 function Ubuntu() {
-  // const [apps, setApps] = useState<AppModel[]>();
-
-  // const [openedAppConfigs, setOpenedAppConfigs] = useState<OpenedAppModel[]>([]);
-
-  /*const handleOpenApp = useCallback((app: App) => {
-    const newId = nanoid();
-    let newZIndex = 1;
-
-    if (openedAppConfigs.length > 0) {
-      newZIndex = Math.max(...openedAppConfigs.map(config => config.zIndex)) + 1;
-    }
-
-    setOpenedAppConfigs(oldVal => {
-      return [...oldVal, { id: newId, zIndex: newZIndex, app: app, minimumSize: app.minimumSize }];
-    });
-  }, [openedAppConfigs]);*/
 
   return (
     <UbuntuWrapper id={"ubuntu"}>
       <MemoInfoBar />
-      <MemoAppBar />{/*apps={apps} onOpenApp={handleOpenApp}*/}
-      <Desktop />{/*openedAppConfigs={openedAppConfigs} setOpenedAppConfigs={setOpenedAppConfigs}*/}
+      <MemoAppBar />
+      <Desktop />
     </UbuntuWrapper>
   );
 }

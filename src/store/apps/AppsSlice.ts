@@ -1,6 +1,7 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { AppModel, Area, OpenedApp } from "src/model/AppModel.ts";
 import IMAGES from "src/components/AppBar/Images.ts";
+import { RootState } from "src/store";
 
 export interface AppsState {
   installedApps: AppModel[],
@@ -42,10 +43,10 @@ const appsSlice = createSlice({
     },
     openApp: (state, action: PayloadAction<AppModel>) => {
       const newId = nanoid();
-      let newZIndex = 1;
+      let newZIndex = 2;
 
       if (state.openedApps.length > 0) {
-        newZIndex = Math.max(...state.openedApps.map(config => config.zIndex)) + 1;
+        newZIndex = Math.max(...state.openedApps.map(config => config.zIndex)) + 2;
       }
 
       state.openedApps.push({
@@ -65,9 +66,9 @@ const appsSlice = createSlice({
       state.openedApps = state.openedApps.filter(app => app.id !== action.payload);
     },
     selectApp: (state, action: PayloadAction<string>) => {
-      const newZIndex = Math.max(...state.openedApps.map(config => config.zIndex)) + 1;
+      const newZIndex = Math.max(...state.openedApps.map(config => config.zIndex)) + 2;
       const index = state.openedApps.findIndex((app) => app.id === action.payload);
-      if (state.openedApps[index].zIndex == newZIndex - 1) return;
+      if (state.openedApps[index].zIndex == newZIndex - 2) return;
       state.openedApps[index].zIndex = newZIndex;
     },
     setAppArea: (state, action: PayloadAction<{ id: string, area: Area }>) => {
@@ -85,3 +86,4 @@ const appsSlice = createSlice({
 export const appsSliceActions = appsSlice.actions;
 
 export const appsSliceReducer = appsSlice.reducer;
+export const getHighestZIndex = (state: RootState) => Math.max(...state.apps.openedApps.map(app => app.zIndex));
