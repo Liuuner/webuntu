@@ -1,13 +1,9 @@
 import "src/components/Desktop/Desktop.css";
-import React, { memo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAppSelector } from "src/hooks/storeHooks.ts";
 import App from "src/components/Desktop/App/App.tsx";
-import DesktopSelect from "src/components/Desktop/DesktopSelect.tsx";
-
-/*type DesktopProps = {
-  openedAppConfigs: OpenedAppModel[],
-  setOpenedAppConfigs: React.Dispatch<React.SetStateAction<OpenedAppModel[]>>
-}*/
+import { Area } from "src/model/AppModel.ts";
+import { getHighestZIndex } from "src/store/apps/AppsSlice.ts";
 
 type DesktopSelectPos = {
   x: number;
@@ -16,15 +12,54 @@ type DesktopSelectPos = {
   width: number;
 }
 
-function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
+export interface FullscreenPreview {
+  setArea(_area: Partial<Area>): void;
+
+  setIsActive(_isActive: boolean): void;
+
+  clearFullscreenPreview(): void;
+}
+
+function Desktop() {
   const { infoBarHeight, appBarWidth } = useAppSelector(state => state.settings);
-  const [isFullscreenPreview, setIsFullscreenPreview] = useState<boolean>(false);
   const [desktopSelectPos, setDesktopSelectPos] = useState<DesktopSelectPos>({
     x: -1,
     y: -1,
     height: 0,
     width: 0
   });
+  const highestZIndex = useAppSelector(getHighestZIndex);
+  const fullscreenPreviewRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    fullscreenPreviewRef.current?.style.setProperty("--app-preview-z-index", `${highestZIndex - 1}`);
+  }, [highestZIndex]);
+
+  const fullscreenPreview: FullscreenPreview = useMemo(() => ({
+    setArea(area: Partial<Area>) {
+      if (area.top) {
+        fullscreenPreviewRef.current?.style.setProperty("--app-preview-top", `${area.top + 5}px`);
+      }
+      if (area.left) {
+        fullscreenPreviewRef.current?.style.setProperty("--app-preview-left", `${area.left + 5}px`);
+      }
+      if (area.width) {
+        fullscreenPreviewRef.current?.style.setProperty("--app-preview-width", `${area.width - 10}px`);
+      }
+      if (area.height) {
+        fullscreenPreviewRef.current?.style.setProperty("--app-preview-height", `${area.height - 10}px`);
+      }
+    },
+
+    setIsActive(isActive: boolean) {
+      fullscreenPreviewRef.current?.setAttribute("class", isActive ? "active" : "inactive");
+    },
+
+    clearFullscreenPreview() {
+      fullscreenPreviewRef.current?.setAttribute("class", "");
+    }
+  }), []);
+
 
   const openedApps = useAppSelector(state => state.apps.openedApps);
 
@@ -72,7 +107,7 @@ function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
   return (
     <main id={"desktop"}
           onMouseDown={e => startDesktopSelect(e)}>
-      <div id={"fullscreenPreview"} className={isFullscreenPreview ? "active" : ""} />
+      <div id={"fullscreenPreview"} ref={fullscreenPreviewRef} />
       <div id={"desktopSelect"} style={{
         top: (desktopSelectPos.y + "px"),
         left: (desktopSelectPos.x + "px"),
@@ -86,7 +121,7 @@ function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
           <App
             key={appConfig.id}
             appObject={appConfig}
-            setIsFullscreenPreview={setIsFullscreenPreview}
+            fullscreenPreview={fullscreenPreview}
           />
         ))
       }
@@ -94,6 +129,6 @@ function Desktop(/*{ openedAppConfigs, setOpenedAppConfigs }: DesktopProps*/) {
   );
 }
 
-const MemoDesktopSelect = memo(DesktopSelect);
+// const MemoDesktopSelect = memo(DesktopSelect);
 
 export default Desktop;

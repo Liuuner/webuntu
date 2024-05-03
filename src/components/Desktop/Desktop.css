@@ -4,25 +4,64 @@
 }
 
 #fullscreenPreview {
+    /*Initial values*/
+    --app-preview-z-index: -10;
+    --app-preview-top: 0px;
+    --app-preview-left: 0px;
+    --app-preview-width: 0px;
+    --app-preview-height: 0px;
+    
+    --preview-spacing: 10px;
+    
+    display: none;
     position: absolute;
-    margin: 10px;
     
-    height: 0;
-    width: 0;
-    left: calc((100% - 70px) / 2 + 70px - 10px);
-    transition: ease-in-out 200ms;
+    z-index: var(--app-preview-z-index);
     
-    &.active {
-        left: 70px;
-        width: calc(100% - 70px - 20px); /* due to position: absolute the width 100% is the full width and height of the innerWindow. With Position relative this problem is solved but then the app doesn't like it!*/
-        height: calc(100% - 23px - 20px);
-        
+    &.active, &.inactive {
+        display: block;
         border-radius: 10px;
         background-color: #FFF2;
         backdrop-filter: blur(13px);
         outline: #FFF3 2px solid;
-        
-        transition: ease-in-out 200ms;
+    }
+    
+    &.active {
+        animation: enterFullscreenPreview 230ms ease forwards;
+    }
+    
+    &.inactive {
+        animation: exitFullscreenPreview 230ms ease forwards;
+    }
+}
+
+@keyframes enterFullscreenPreview {
+    from {
+        top: var(--app-preview-top);
+        left: var(--app-preview-left);
+        width: var(--app-preview-width);
+        height: var(--app-preview-height);
+    }
+    to {
+        left: calc(var(--app-bar-width) + var(--preview-spacing));
+        top: calc(var(--info-bar-height) + var(--preview-spacing));
+        height: calc(100% - var(--info-bar-height) - 2 * var(--preview-spacing));
+        width: calc(100% - var(--app-bar-width) - 2 * var(--preview-spacing));
+    }
+}
+
+@keyframes exitFullscreenPreview {
+    from {
+        left: calc(var(--app-bar-width) + var(--preview-spacing));
+        top: calc(var(--info-bar-height) + var(--preview-spacing));
+        height: calc(100% - var(--info-bar-height) - 2 * var(--preview-spacing));
+        width: calc(100% - var(--app-bar-width) - 2 * var(--preview-spacing));
+    }
+    to {
+        top: var(--app-preview-top);
+        left: var(--app-preview-left);
+        width: var(--app-preview-width);
+        height: var(--app-preview-height);
     }
 }
 

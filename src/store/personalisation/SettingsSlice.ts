@@ -23,9 +23,11 @@ const settingsSlice = createSlice({
   reducers: {
     setAppBarWidth: (state, action: PayloadAction<number>) => {
       state.appBarWidth = action.payload;
+      document.querySelector("html")?.style.setProperty("--app-bar-width", `${action.payload}px`);
     },
     setInfoBarHeight: (state, action: PayloadAction<number>) => {
       state.infoBarHeight = action.payload;
+      document.querySelector("html")?.style.setProperty("--info-bar-height", `${action.payload}px`);
     },
     setTimeFormat: (state, action: PayloadAction<string>) => {
       state.timeFormat = action.payload;
@@ -34,12 +36,16 @@ const settingsSlice = createSlice({
       state.accentColor = action.payload;
     },
     setPersonalisation: (state, action: PayloadAction<SettingsState>) => {
-      // state = { ...action.payload };
+      const { timeFormat, accentColor, infoBarHeight, appBarWidth } = action.payload;
+      state.timeFormat = timeFormat;
+      state.accentColor = accentColor;
 
-      state.timeFormat = action.payload.timeFormat;
-      state.accentColor = action.payload.accentColor;
-      state.infoBarHeight = action.payload.infoBarHeight;
-      state.appBarWidth = action.payload.appBarWidth;
+      const html = document.querySelector("html");
+
+      html?.style.setProperty("--info-bar-height", `${infoBarHeight}px`);
+      state.infoBarHeight = infoBarHeight;
+      html?.style.setProperty("--app-bar-width", `${appBarWidth}px`);
+      state.appBarWidth = appBarWidth;
     }
   }
 });
