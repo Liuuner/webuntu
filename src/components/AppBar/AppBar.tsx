@@ -16,12 +16,12 @@ const AppBar = () => {
     <aside id={"appBar"}>
       <div id={"apps"}>
         {taskbarApps.map((app, index) => (
-          <div onClick={() => handleOpenApp(app)} key={index} className={"appIcon"}>
+          <div onClick={() => handleOpenApp(app)} key={index} className={"icon"}>
             <img src={app.icon} alt={app.name} />
           </div>
         ))}
       </div>
-      <div id={"menuIcon"}>
+      <div className={"icon"}>
         <img src={IMAGES.menu} alt="Menu" />
       </div>
     </aside>
