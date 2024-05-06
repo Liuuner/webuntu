@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DataConnection, Peer } from "peerjs";
+import { Alert, AlertColor, Box, Button, Container, TextField, Typography } from "@mui/material";
 
 type TTTLoginProps = {
   peer: Peer | undefined;
@@ -16,6 +17,7 @@ type TTTLoginProps = {
 
 export function TTTLogin(props: TTTLoginProps) {
   const [msg, setMsg] = useState("Connect to a game");
+  const [msgSeverity, setMsgSeverity] = useState<AlertColor>("info");
 
   function onConnOpen(conn: DataConnection) {
     props.setConn(conn);
@@ -65,6 +67,7 @@ export function TTTLogin(props: TTTLoginProps) {
 
   useEffect(() => {
     let tmpMsg = "Connect to a game";
+    let tmpMsgSeverity: AlertColor = "info";
     switch (props.playerNum) {
       case 3:
         tmpMsg = "You won against " + props.oppUsername;
@@ -74,29 +77,48 @@ export function TTTLogin(props: TTTLoginProps) {
         break;
       case 5:
         tmpMsg = "Error: Game corrupted";
+        tmpMsgSeverity = "error";
         break;
       case 6:
         tmpMsg = "Error: Disconnected";
+        tmpMsgSeverity = "error";
         break;
     }
     setMsg(tmpMsg);
+    setMsgSeverity(tmpMsgSeverity);
   }, [props.playerNum]);
 
   return (
     <>
-      <h2>Peer-Tac-Toe</h2>
-      <h3>{msg}</h3>
-      <label htmlFor={"username-input"}>Choose your Username:</label>
-      <input id={"username-input"} type="text" value={props.username}
-             onChange={(e) => props.setUsername(e.target.value)}
-             disabled={!!props.peer} />
-      <button onClick={setupPeer}
-              disabled={!!props.peer}>Connect
-      </button>
-      <label htmlFor={"oppusername-input"}>Your opponents Username:</label>
-      <input id={"oppusername-input"} type="text" value={props.oppUsername}
-             onChange={(e) => props.setOppUsername(e.target.value)} disabled={!props.peer} />
-      <button onClick={connectToGame} disabled={!props.peer}>Connect to Game</button>
+      <Container maxWidth={"xs"}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <Typography variant="h5">
+            Peer-Tac-Toe
+          </Typography>
+          <br />
+          <Alert severity={msgSeverity}>
+            {msg}
+          </Alert>
+          <Box component="form">
+            <TextField margin={"normal"} fullWidth id={"username-input"} type="text" value={props.username}
+                       label={"Choose your Username"}
+                       onChange={(e) => props.setUsername(e.target.value)}
+                       disabled={!!props.peer} />
+            <Button fullWidth onClick={setupPeer} variant={"contained"} disabled={!!props.peer}>Connect</Button>
+            <TextField margin={"normal"} fullWidth id={"oppusername-input"} type="text" value={props.oppUsername}
+                       label={"Your opponents Username"}
+                       onChange={(e) => props.setOppUsername(e.target.value)} disabled={!props.peer} />
+            <Button fullWidth variant={"contained"} onClick={connectToGame} disabled={!props.peer}>Connect to
+              Game</Button>
+          </Box>
+        </Box>
+      </Container>
     </>
   );
 }

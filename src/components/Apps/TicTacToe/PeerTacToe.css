@@ -3,7 +3,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 100%;
+    height: calc(100% - 20px);
+    padding: 10px;
 }
 
 #ttt-game {
@@ -11,10 +12,6 @@
     max-width: 100%;
     border-collapse: collapse;
     aspect-ratio: 1/1 !important;
-}
-
-#ttt-game tr{
-
 }
 
 #ttt-game td {
