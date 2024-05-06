@@ -1,17 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Ubuntu from "./Ubuntu.tsx";
 import "./index.css";
-import { BrowserRouter } from "react-router-dom";
+import Providers from "src/Providers.tsx";
+import store, { persistor } from "src/store";
 import { Provider } from "react-redux";
-import { store } from "./app/store.ts";
-import Theme from "./Theme.tsx";
+import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-      <BrowserRouter>
-        <Theme />
-        <Ubuntu />
-      </BrowserRouter>
+      <PersistGate loading={null} persistor={persistor}>
+        <Providers />
+      </PersistGate>
     </Provider>
+  </React.StrictMode>
 );
