@@ -107,9 +107,10 @@ export const UnmemorizedApp = ({ fullscreenPreview, appObject }: AppProps) => {
 
     document.onmousemove = (e) => {
       const result = drag(e);
-
+      const width = Number(appElem.current?.style.getPropertyValue("--width").replace("px", ""));
+      const height = Number(appElem.current?.style.getPropertyValue("--height").replace("px", ""));
       setCssArea(result);
-      setArea(result);
+      setArea({ ...result, width, height });
     };
     document.onmouseup = (e) => {
       clear(e);
