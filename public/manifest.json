@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest.json",
+  "name": "Webuntu",
+  "short_name": "Webuntu",
+  "start_url": ".",
+  "display": "fullscreen",
+  "background_color": "#000",
+  "description": "A fake os in the browser with the design of ubuntu",
+  "icons": [
+    {
+      "src": "/ubuntu.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

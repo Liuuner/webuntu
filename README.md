@@ -47,6 +47,12 @@ This project aims to create a web-based user interface that simulates the look a
 
 We welcome contributions! If you'd like to contribute to this project, please follow the guidelines in CONTRIBUTING.md.
 
+### Imports
+
+Imports are now absolute. Configure in IntelliJ like this.
+![img.png](intelliJ-formatting.png)
+
+
 ## License
 
 This project is licensed under the ***[BaNaNa](https://www.youtube.com/watch?v=sJZ1G0e5bWU)*** License.

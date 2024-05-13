@@ -17,8 +17,15 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    // for absolute imports
+    "baseUrl": "./",
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
