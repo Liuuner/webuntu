@@ -22,8 +22,8 @@ export function TTTGame(props: TTTGameProps) {
       setNewGameState(data as number[]);
     });
     props.conn.on("close", function() {
-      props.setGameOn(false)
-      props.setConn(undefined)
+      props.setGameOn(false);
+      props.setConn(undefined);
     });
   }, [props.conn]);
 
@@ -49,7 +49,7 @@ export function TTTGame(props: TTTGameProps) {
   function endGame(status: number) {
     console.log("exit-game", status);
     props.setPlayerNum(status);
-    props.setGameOn(false)
+    props.setGameOn(false);
   }
 
   function checkIfWon(num1: number, num2: number, num3: number, newGameState: number[]) {
@@ -105,30 +105,37 @@ export function TTTGame(props: TTTGameProps) {
     return gameState.filter(state => state == 0).length % 2 == props.playerNum - 1 || gameState[index] != 0;
   }
 
-  function getBtnState(index: number): JSX.Element | string{
+  function getBtnState(index: number): JSX.Element | string {
     switch (gameState[index]) {
       case 1:
         return "X";
       case 2:
         return "O";
     }
-    if (gameState.filter(state => state == 0).length % 2 != props.playerNum - 1){
-      switch (props.playerNum){
+    if (gameState.filter(state => state == 0).length % 2 != props.playerNum - 1) {
+      switch (props.playerNum) {
         case 1:
           return "X";
         case 2:
           return "O";
       }
     }
-    return <>&emsp;</>
+    return "C";
+  }
+
+  function isBtnHidden(index: number): boolean {
+    return getBtnState(index) == "C";
   }
 
   return (
     <table id={"ttt-game"}>
       <tbody>
-        <TTTRow rowIndex={1} isBtnDisabled={isBtnDisabled} getBtnState={getBtnState} setField={setField} />
-        <TTTRow rowIndex={2} isBtnDisabled={isBtnDisabled} getBtnState={getBtnState} setField={setField} />
-        <TTTRow rowIndex={3} isBtnDisabled={isBtnDisabled} getBtnState={getBtnState} setField={setField} />
+        <TTTRow rowIndex={1} isBtnDisabled={isBtnDisabled} isBtnHidden={isBtnHidden} getBtnState={getBtnState}
+                setField={setField} />
+        <TTTRow rowIndex={2} isBtnDisabled={isBtnDisabled} isBtnHidden={isBtnHidden} getBtnState={getBtnState}
+                setField={setField} />
+        <TTTRow rowIndex={3} isBtnDisabled={isBtnDisabled} isBtnHidden={isBtnHidden} getBtnState={getBtnState}
+                setField={setField} />
       </tbody>
     </table>
   );

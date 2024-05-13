@@ -35,10 +35,18 @@
     border-right: none;
 }
 
+#ttt-game tbody{
+    aspect-ratio: 1/1 !important;
+}
+
+#ttt-game tr{
+    aspect-ratio: 1/3 !important;
+}
+
 .ttt-btn {
     height: 100%;
     width: 100%;
-    font-size: 5rem;
+    font-size: xxx-large;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -50,8 +58,15 @@
     cursor: not-allowed;
     border: none;
     color: white;
+    aspect-ratio: 1/1 !important;
 }
 
 .ttt-btn:hover{
     color: white;
+    aspect-ratio: 1/1 !important;
+}
+
+.ttt-btn-svg{
+    height: 5rem;
+    aspect-ratio: 1/1 !important;
 }

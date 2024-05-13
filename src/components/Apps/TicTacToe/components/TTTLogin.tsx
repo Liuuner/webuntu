@@ -98,10 +98,6 @@ export function TTTLogin(props: TTTLoginProps) {
             alignItems: "center"
           }}
         >
-          <Typography variant="h5">
-            Peer-Tac-Toe
-          </Typography>
-          <br />
           <Alert severity={msgSeverity}>
             {msg}
           </Alert>
