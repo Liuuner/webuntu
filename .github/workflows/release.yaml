@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        type: choice
+        description: 'Choice of SemVer release type [patch, minor, major]'
+        required: true
+        default: 'PATCH'
+        options:
+          - 'MAJOR'
+          - 'MINOR'
+          - 'PATCH'
+      commit:
+        description: 'The commit hash which you want to tag with the version number and release'
+        default: 'b4bf8372bed0a3fb458295c32be78752bcb3b315'
+        required: true
+      deploy:
+        description: "Should deploy to Pages?"
+        default: true
+        type: boolean
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+
+    # required to create a Release
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # the complete History is needed to tag older Commits
+
+      - name: Version
+        id: version
+        uses: ./.github/actions/semVers
+        with:
+          release_type: ${{ inputs.release_type }}
+          is_release: true
+
+      - name: Tag Commit
+        run: |
+          git config user.name liun.tappolet
+          git config user.email liun.tappolet@lernende.bbw.ch
+          git tag ${{ steps.version.outputs.next_version }} ${{ inputs.commit }}
+          git push origin ${{ steps.version.outputs.next_version }}
+
+      - name: Create GitHub-Release
+        id: createRelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.next_version }}
+          generate_release_notes: true
+
+
+  build_and_deploy:
+    name: Build and Deploy
+    if: inputs.deploy
+    needs: release
+    uses: ./.github/workflows/build_and_deploy.yaml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    with:
+      ref: ${{ inputs.commit }}

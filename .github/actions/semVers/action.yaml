@@ -1,0 +1,185 @@
+name: git-tag-versions-action
+
+description: |
+  Evaluate the last, the next and the previous version tag in SemVers format. The next version tag is by default defined
+  by the commits between the last and the next version tag. If any commit is a feature, it is a minor version, if only
+  bugfixes are committed, it is a patch version. If it is not a release 'is_release==false', it appends the
+  'append_to_pre_release_tag' (default:'-rc.0').
+  github tagging action (outputs: last_version, prev_version, next_version)"
+
+inputs:
+  release_type:
+    description: 'Force to create an new version of type Major:["major"], Minor:["minor"], or Patch:["patch"], default:[auto]'
+    default: 'auto'
+
+  is_release:
+    description: 'Next version tag should be a release tag [v[0-9]+.[0-9]+.[0-9]+], otherwise pre-release tag will be created [v[0-9]+.[0-9]+.[0-9]+-<append_to_pre_release_tag>], default:[false]'
+    default: 'false'
+
+  append_to_pre_release_tag:
+    description: 'appendix to the pre-release, eq. [v[0-9]+.[0-9]+.[0-9]+-<append_to_pre_release_tag>], default:[v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+]'
+    default: 'rc.0'
+
+outputs:
+  last_version:
+    description: 'last release version'
+    value: ${{ steps.last_version.outputs.last_version }}
+  prev_version:
+    description: "previous version before last_version"
+    value: ${{ steps.prev_version.outputs.prev_version }}
+  next_version:
+    description: "next new version"
+    value: ${{ steps.next_version.outputs.next_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all tags
+
+    - name: validate input
+      shell: bash
+      run: |
+        # Convert input to lowercase for case-insensitive comparison
+        release_type_lower=$(echo "${{ inputs.release_type }}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+        echo "IS_MAJOR=false" >> $GITHUB_ENV
+        echo "IS_MINOR=false" >> $GITHUB_ENV
+        echo "IS_PATCH=false" >> $GITHUB_ENV
+        
+        # Validate the release_type
+        case $release_type_lower in
+          major)
+            echo "Force release type MAJOR."
+            echo "IS_MAJOR=true" >> $GITHUB_ENV
+            ;;
+          minor)
+            echo "Force release type MINOR."
+            echo "IS_MINOR=true" >> $GITHUB_ENV
+            ;;
+          patch)
+            echo "Force release type PATCH."
+            echo "IS_PATCH=true" >> $GITHUB_ENV
+            ;;
+          *)
+            echo "Auto validate the release type by commits, ether 'major', 'minor', or 'patch'."
+          ;;
+        esac
+        
+        
+        IS_RELEASE="${{ inputs.is_release }}"
+        if [[ "${IS_RELEASE,,}" == "true" || "${IS_RELEASE}" == "1" ]]; then
+          echo "RC_APPENDER=" >> $GITHUB_ENV
+        else
+          RC_APPENDER=$(echo "${{ inputs.append_to_pre_release_tag }}" | tr -d '[:space:]')
+          echo "RC_APPENDER=$RC_APPENDER" >> $GITHUB_ENV
+        fi
+
+    - name: get last version
+      id: last_version
+      shell: bash
+      run: |
+        LAST_VERSION=$(git tag --sort version:refname | grep  ^v[0-9][0-9]*.[0-9][0-9]*.[0-9][0-9]*$ | tail -n 1)
+        
+        echo "LAST_VERSION          = $LAST_VERSION"
+        echo "LAST_VERSION=$LAST_VERSION" >> $GITHUB_ENV
+        echo "last_version=$LAST_VERSION" >> $GITHUB_OUTPUT
+
+    - name: get previous version
+      id: prev_version
+      shell: bash
+      run: |
+        PREVIOUS_VERSION=$(git tag --sort version:refname | grep  ^v[0-9][0-9]*.[0-9][0-9]*.[0-9][0-9]*$ | tail -n 2 | head -1)
+        echo "PREVIOUS_VERSION = $PREVIOUS_VERSION"
+        echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
+        echo "prev_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+
+    - name: next version
+      id: next_version
+      shell: bash
+      run: |
+        echo "Input: IS_MAJOR:[$IS_MAJOR] IS_MINOR:[$IS_MINOR] IS_PATCH:[$IS_PATCH] LAST_VERSION:[$LAST_VERSION] PREVIOUS_VERSION:[$PREVIOUS_VERSION]"
+        
+        SEMVER_REGEX="^((feature\/))(.*)"
+        echo "SemVersionRegex: ${SEMVER_REGEX,,}"
+        
+        
+        # Funktion zum Prüfen, ob ein Tag bereits existiert
+        tag_exists() {
+          local tag="$1"
+          git rev-parse -q --verify "refs/tags/$tag" > /dev/null
+        }
+        
+        # Funktion zum Erhöhen der Versionsnummer
+        next_version() {
+          local version="$1";
+          local isMajor="$2";
+          local isMinor="$3";
+          local isPatch="$4";
+        
+          local majorVersion=$(echo "${version#[vV]}" | cut -d '.' -f1);
+          local minorVersion=$(echo "$version" | cut -d '.' -f2);
+          local patchVersion=$(echo "$version" | cut -d '.' -f3);
+        
+          if [[ "$isMajor" == "true" ]]; then
+            majorVersion=$(expr $majorVersion + 1);
+            minorVersion=0;
+            patchVersion=0;
+          elif [[ "$isMinor" == "true" ]]; then
+            minorVersion=$(expr $minorVersion + 1);
+            patchVersion=0;
+          else
+            patchVersion=$(expr $patchVersion + 1);
+          fi
+        
+          # return next version
+          echo "v${majorVersion}.${minorVersion}.${patchVersion}"
+        }
+        
+        
+        increment_last_number() {
+          local version="$1"
+          local last_part
+          last_part=$(echo "${version#[vV]}" | sed -E 's/.*\.([^\.]+)$/\1/')
+        
+          if [[ $last_part =~ ^[0-9]+$ ]]; then
+            # If the last part is a number, increment it
+            local incremented_last_part=$((last_part + 1))
+            local leading_version
+            leading_version=$(echo "${version#[vV]}" | sed -E 's/(.*)\.[^\.]+$/\1/')
+            echo "v${leading_version}.${incremented_last_part}"
+          else
+            # If the last part is not a number, add ".0" at the end
+            echo "${version%.}${version:+.}0"
+          fi
+        }
+        
+        
+        # Evaluate the release type, ether it is forced by IS_MAJOR, IS_MINOR, IS_PATCH from given input,
+        # or it will be validated based on the commit messages
+        if [[ "$IS_MAJOR" != "true" && "$IS_MINOR" != "true" && "$IS_PATCH" != "true" ]]; then
+          echo "Auto validate the release-type:"
+          while read -r line; do
+            echo " - check commit: ${line,,}"
+            if [[ ${line,,} =~ $SEMVER_REGEX ]]; then
+              IS_MINOR=true
+            fi
+          done <<< $(git log "${LAST_VERSION}..HEAD" --pretty=format:%s)
+        fi
+        
+        
+        # Prüfen, ob das Tag bereits existiert
+        echo "check next version with input version=[$LAST_VERSION] isMajor=[$IS_MAJOR] isMinor=[$IS_MINOR] isPatch=[$IS_PATCH]"
+        current_version=$(next_version "$LAST_VERSION" "$IS_MAJOR" "$IS_MINOR" "$IS_PATCH")
+        if [[ -n "$RC_APPENDER" ]]; then current_version="${current_version}-$RC_APPENDER"; fi
+        while tag_exists "$current_version"; do
+          echo "Tag [$current_version] exists. Incrementing..."
+          current_version=$(increment_last_number "$current_version")
+         echo "...check next version [$current_version]"
+        done
+        
+        
+        NEXT_VERSION="${current_version}"
+        echo "next_version=$NEXT_VERSION"
+        echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
