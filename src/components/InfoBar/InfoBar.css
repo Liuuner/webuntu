@@ -1,35 +1,32 @@
 #infoBar {
     grid-area: infoBar;
     background-color: #000;
-    display: flex;
-    /*justify-content: space-between;*/
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
-}
-
-#leftButtonGroup {
-    display: flex;
-}
-
-.infoBarButton {
-    display: flex;
-}
-
-.infoBarButton img {
-    height: 80%;
-}
-
-#rightButtonGroup {
-    display: flex;
-}
-
-#rightButtonGroup img {
-    height: 80%;
-}
-
-#time {
-    display: flex;
+    
+    .buttonGroup {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        
+        &.left {
+            /*background-color: #521338;*/
+            justify-content: left;
+        }
+        
+        &.center {
+            /*background-color: #e95420;*/
+            justify-content: center;
+        }
+        
+        &.right {
+            /*background-color: #130610;*/
+            justify-content: right;
+        }
+    }
 }
