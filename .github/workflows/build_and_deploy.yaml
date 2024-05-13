@@ -58,7 +58,7 @@ jobs:
       #            ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install dependencies
-        run: npm clean install
+        run: npm ci
 
       - name: Build
         env:
