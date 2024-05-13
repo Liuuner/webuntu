@@ -92,8 +92,11 @@ export const UnmemorizedApp = ({ fullscreenPreview, appObject }: AppProps) => {
 
     const { setArea, setIsActive, clearFullscreenPreview } = fullscreenPreview;
 
+    const w = Number(appElem.current?.style.getPropertyValue("--width").replace("px", ""));
+    const h = Number(appElem.current?.style.getPropertyValue("--height").replace("px", ""));
+
     const originalClientY = e.clientY;
-    const originalArea = { ...area };
+    const originalArea = { ...area, width: w, height: h };
     const innerWidth = window.innerWidth;
     const innerHeight = window.innerHeight;
 
@@ -102,6 +105,7 @@ export const UnmemorizedApp = ({ fullscreenPreview, appObject }: AppProps) => {
       e.clientX - target.getBoundingClientRect().left + appBarWidth;
     const offsetTop =
       e.clientY - target.getBoundingClientRect().top + infoBarHeight;
+
 
     setArea(originalArea);
 
