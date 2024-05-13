@@ -3,6 +3,7 @@ import IMAGES from "./Images.ts";
 import { AppModel } from "src/model/AppModel.ts";
 import { useAppDispatch, useAppSelector } from "src/hooks/storeHooks.ts";
 import { appsSliceActions } from "src/store/apps/AppsSlice.ts";
+import AppIcon from "src/components/AppBar/AppIcon.tsx";
 
 const AppBar = () => {
   const dispatch = useAppDispatch();
@@ -16,9 +17,7 @@ const AppBar = () => {
     <aside id={"appBar"}>
       <div id={"apps"}>
         {taskbarApps.map((app, index) => (
-          <div onClick={() => handleOpenApp(app)} key={index} className={"icon"}>
-            <img src={app.icon} alt={app.name} />
-          </div>
+          <AppIcon app={app} handleOpenApp={handleOpenApp} key={index} />
         ))}
       </div>
       <div className={"icon"}>
