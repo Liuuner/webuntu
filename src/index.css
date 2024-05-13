@@ -1,4 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@500&family=Roboto:wght@100;300;400;500;700;900&display=swap");
+* {
+    font-family: "Ubuntu", sans-serif;
+}
 
 :root {
     --app-icon-width: 80%;
@@ -16,7 +18,6 @@ body,
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    font-family: "Roboto", sans-serif;
 }
 
 html,
