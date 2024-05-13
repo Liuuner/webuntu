@@ -46,8 +46,8 @@ jobs:
 
       - name: Tag Commit
         run: |
-          git config user.name liun.tappolet
-          git config user.email liun.tappolet@lernende.bbw.ch
+          git config user.name liuuner
+          git config user.email liun@tappolet.ch
           git tag ${{ steps.version.outputs.next_version }} ${{ inputs.commit }}
           git push origin ${{ steps.version.outputs.next_version }}
 
