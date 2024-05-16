@@ -25,8 +25,8 @@ const useBattery = (): BatteryInfo => {
   const [batteryInfo, setBatteryInfo] = useState<BatteryInfo>(initialBatteryInfo);
 
   const updateBatteryInfo = (battery: Battery) => {
-    const level = battery.level * 100;
-    setBatteryInfo({ level, levelFormatted: `${level.toFixed(0)}%`, charging: battery.charging, supported: true });
+    const { level, charging } = battery;
+    setBatteryInfo({ level, levelFormatted: `${(level * 100).toFixed(0)}%`, charging, supported: true });
   };
 
   useEffect(() => {
