@@ -1,14 +1,14 @@
 const Battery = ({ level, isCharging }: { level: number, isCharging: boolean }) => {
   const maxBatteryLevelWidth = 49;
   const minBatteryLevelWidth = 3;
-  const batteryLevelWidth = level / 100 * (maxBatteryLevelWidth - minBatteryLevelWidth) + minBatteryLevelWidth;
+  const batteryLevelWidth = level * (maxBatteryLevelWidth - minBatteryLevelWidth) + minBatteryLevelWidth;
 
   const batteryColor = () => {
     if (isCharging) {
       return "green";
-    } else if (level < 10) {
+    } else if (level < 0.1) {
       return "red";
-    } else if (level < 25) {
+    } else if (level < 0.25) {
       return "orange";
     }
     return "white";
@@ -19,7 +19,6 @@ const Battery = ({ level, isCharging }: { level: number, isCharging: boolean }) 
       fill="#FFF"
       style={{ aspectRatio: 800 / 426.6 }}
       height="100%"
-      // width="100%"
       viewBox="0 0 60 31.999999"
       xmlns="http://www.w3.org/2000/svg"
     >

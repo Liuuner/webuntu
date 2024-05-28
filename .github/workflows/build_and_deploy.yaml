@@ -1,4 +1,4 @@
-name: Build and Deploy to Pages
+name: Publish to Pages
 
 on:
   workflow_dispatch:
@@ -14,6 +14,9 @@ on:
         description: 'The commit hash or tag which you want to build and deploy.'
         required: true
         type: string
+  push:
+    branches:
+      - master
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -32,10 +35,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout with ref
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' }}
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+
+      - name: Checkout without ref
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -45,17 +53,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
-
-      #      - name: Restore cache
-      #        uses: actions/cache@v4
-      #        with:
-      #          path: |
-      #            .node/cache
-      #          # Generate a new cache whenever packages or source files change.
-      #          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
-      #          # If source files changed but packages didn't, rebuild from a prior cache.
-      #          restore-keys: |
-      #            ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install dependencies
         run: npm ci
