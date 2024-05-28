@@ -1,0 +1,21 @@
+#terminal{
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: white;
+}
+
+#terminal-input-row{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#terminal-input{
+    width: 100%;
+    border: none;
+    background-color: black;
+    color: white;
+    outline: none;
+}

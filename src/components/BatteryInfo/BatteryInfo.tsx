@@ -30,7 +30,7 @@ function BatteryInfo() {
 
   return (
     <Tooltip
-      title={`Battery Status: ${batteryInfo.level}% remaining`}
+      title={`Battery Status: ${batteryInfo.levelFormatted} remaining`}
       slotProps={{
         popper: {
           modifiers: [

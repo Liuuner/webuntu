@@ -7,7 +7,7 @@
 
 ## Overview
 
-This project aims to create a web-based user interface that simulates the look and feel of a real Ubuntu desktop environment. Users can interact with the website as if they were using a virtual machine running Ubuntu. Except the Terminal.
+This project aims to create a web-based user interface that simulates the look and feel of a real Ubuntu desktop environment. Users can interact with the website as if they were using a virtual machine running Ubuntu. Except the Shelly.
 
 ## Features
 

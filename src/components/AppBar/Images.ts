@@ -5,7 +5,9 @@ const IMAGES = {
   settings: new URL("/app-icons/settings-icon.png", import.meta.url).href,
   help: new URL("/app-icons/help-icon.png", import.meta.url).href,
   menu: new URL("/app-icons/menu-icon.svg", import.meta.url).href,
-  components: new URL("/app-icons/components.png", import.meta.url).href
+  components: new URL("/app-icons/components.png", import.meta.url).href,
+  fileManager: new URL("/app-icons/filemanager-app.png", import.meta.url).href,
+  terminal: new URL("/app-icons/terminal-app.png", import.meta.url).href,
 };
 
 export default IMAGES;
