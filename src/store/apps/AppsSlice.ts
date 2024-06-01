@@ -18,7 +18,8 @@ export const appsInitialState: AppsState = {
     { name: "Rhythmbox", icon: IMAGES.rhythmBox, appKey: "defaultApp" },
     { name: "Settings", icon: IMAGES.settings, appKey: "settings" },
     { name: "Help", icon: IMAGES.help, appKey: "defaultApp" },
-    { name: "MfTest", icon: IMAGES.components, appKey: "mfTest" }
+    { name: "MfTest", icon: IMAGES.components, appKey: "mfTest" },
+    { name: "PeerTacToe", icon: IMAGES.peerTacToe, appKey: "peerTacToe"}
   ],
   openedApps: [],
   _persist: ""
