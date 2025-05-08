@@ -115,7 +115,6 @@ function Desktop() {
         width: (desktopSelectPos.width + "px"),
         display: (desktopSelectPos.width + desktopSelectPos.height > 0 ? "block" : "none")
       }} />
-
       {
         openedApps.map((appConfig) => (
           <App
