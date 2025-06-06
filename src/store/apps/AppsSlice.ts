@@ -80,6 +80,12 @@ const appsSlice = createSlice({
       const { id, isFullscreen } = action.payload;
       const index = state.openedApps.findIndex((app) => app.id === id);
       state.openedApps[index].isFullscreen = isFullscreen;
+    },
+    setPreviewData: (state, action: PayloadAction<{ id: string, data: string }>) => {
+      const { id, data } = action.payload;
+      const index = state.openedApps.findIndex((app) => app.id === id);
+      console.log(index, data);
+      state.openedApps[index].previewData = data;
     }
   }
 });

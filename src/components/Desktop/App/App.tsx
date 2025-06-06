@@ -9,6 +9,7 @@ import { WindowRoundedIcon } from "src/components/Desktop/App/WindowRoundedIcon.
 import { IconClose } from "src/icons";
 import MinimiseBar from "src/icons/icons/MinimiseBar.tsx";
 import { FullscreenPreview } from "src/components/Desktop/Desktop.tsx";
+import html2canvas from "html2canvas";
 
 enum Direction {
   TOP_LEFT,
@@ -289,13 +290,29 @@ export const UnmemorizedApp = ({ fullscreenPreview, appObject }: AppProps) => {
 
       dispatch(appsSliceActions.setAppArea({ id, area: newArea }));
       tempArea.current = newArea;
+
+      handleCreatePreview();
     }
   }
+
+  const handleCreatePreview = async () => {
+    console.log("HandleCreatePreview");
+    console.log(id);
+    const element = document.getElementById(id);
+    if (element) {
+      console.log("isElement");
+      const canvas = await html2canvas(element, { scale: 0.5, imageTimeout: 250, backgroundColor: null });
+      const data = canvas.toDataURL("image/jpg");
+
+      dispatch(appsSliceActions.setPreviewData({ id, data }));
+    }
+  };
 
   const AppContent = memo(APPS[app.appKey], () => true);
 
   return (
     <div
+      id={id}
       className={isFullscreen ? "fullscreenApp" : "app"}
       style={{ zIndex: zIndex }}
       onMouseDown={(e) => handleClickApp(e)}

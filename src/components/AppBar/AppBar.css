@@ -28,6 +28,17 @@
         border-radius: 13px;
         margin: 6px 0;
         transition: ease-in-out 130ms;
+        
+        .appPreview {
+            display: none;
+            position: relative;
+            padding: 8px;
+            flex-direction: column;
+            justify-content: left;
+            backdrop-filter: brightness(60%) blur(10px);
+            border-radius: 13px;
+            left: 190px;
+        }
     }
     
     .icon > img {
@@ -37,5 +48,9 @@
     
     .icon:hover {
         background: #423b40;
+        
+        .appPreview {
+            display: flex;
+        }
     }
 }

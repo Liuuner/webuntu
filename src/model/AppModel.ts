@@ -15,6 +15,7 @@ export type OpenedApp = {
   zIndex: number;
   area: Area;
   isFullscreen: boolean;
+  previewData?: string;
 }
 
 export type Area = {
