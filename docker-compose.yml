@@ -1,0 +1,14 @@
+services:
+  webuntu:
+    image: liuuner/webuntu:v0.1.2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.webuntu.loadbalancer.server.port=80"
+      - "traefik.http.routers.webuntu.rule=Host(`webuntu.liuuner.ch`)"
+      - "traefik.http.routers.webuntu.entrypoints=websecure"
+      - "traefik.http.routers.webuntu.tls.certresolver=letsencrypt"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
